@@ -121,19 +121,21 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 }
 
 /* ==========================================================
-   3. 布局兼容 (修复 inset 导致的崩溃)
+   3. 布局兼容
    ========================================================== */
 .app{
   position:fixed;
   top:0; left:0; right:0; bottom:0;
   z-index:1;
   display:flex;flex-direction:column;gap:8px;
-  /* 使用安全的 padding，避免浏览器计算 env() 失败导致整体崩溃 */
   padding:12px;
   padding-top:calc(12px + env(safe-area-inset-top, 0px));
   padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
 }
 .hud{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto;}
+
+/* Logo 区域：增加点击手势，代替原来的 i 按钮 */
+.logo-wrap { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .logo{
   margin:0;font-size:clamp(22px,7vw,30px);font-weight:900;letter-spacing:-.03em;
   background:linear-gradient(120deg,var(--accent),var(--text));
@@ -258,7 +260,6 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   outline:none;
 }
 
-/* 兼容性修复：确保老手机有背景色 */
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .btn{ background-color:var(--panel) !important; }
   .btn.primary{ background-color:var(--accent) !important; }
@@ -377,7 +378,8 @@ html[data-theme="classic"] .btn.primary, html[data-theme="macaron"] .btn.primary
 
 <div class="app">
   <header class="hud">
-    <div>
+    <!-- 给标题包裹一层可点击区域，代替原 i 按钮 -->
+    <div class="logo-wrap" id="logoWrap">
       <h1 class="logo">2048</h1>
       <p class="sub" id="subText">滑动合并 · 冲击 2048</p>
     </div>
@@ -401,12 +403,12 @@ html[data-theme="classic"] .btn.primary, html[data-theme="macaron"] .btn.primary
     </div>
   </main>
 
+  <!-- 去掉了底部的 i 按钮 -->
   <footer class="toolbar">
     <button class="btn primary" id="btnNew">新游戏</button>
     <button class="btn" id="btnUndo">悔棋<span class="badge" id="undoBadge">0</span></button>
     <button class="btn" id="btnTheme">主题</button>
     <button class="btn" id="btnSize">4×4</button>
-    <button class="btn" id="btnAbout" style="flex:0 0 46px;">i</button>
   </footer>
 </div>
 
@@ -1095,13 +1097,16 @@ window.onload = function() {
   try { soundPref = localStorage.getItem(LS.sound) !== '0'; } catch(e) {}
   applySound(soundPref);
 
-  const btnNew = $('btnNew'), btnUndo = $('btnUndo'), btnTheme = $('btnTheme'), btnSize = $('btnSize'), btnSound = $('btnSound'), btnAbout = $('btnAbout');
+  const btnNew = $('btnNew'), btnUndo = $('btnUndo'), btnTheme = $('btnTheme'), btnSize = $('btnSize'), btnSound = $('btnSound');
   if(btnNew) btnNew.addEventListener('click', askNewGame);
   if(btnUndo) btnUndo.addEventListener('click', undo);
   if(btnTheme) btnTheme.addEventListener('click', cycleTheme);
   if(btnSize) btnSize.addEventListener('click', cycleSize);
   if(btnSound) btnSound.addEventListener('click', toggleSound);
-  if(btnAbout) btnAbout.addEventListener('click', showAbout);
+  
+  // 将“关于”功能绑定到顶部 Logo 点击
+  const logoWrap = $('logoWrap');
+  if(logoWrap) logoWrap.addEventListener('click', showAbout);
 
   let savedSize = 4;
   try { savedSize = Number(localStorage.getItem(LS.size)) || 4; } catch(e) {}
