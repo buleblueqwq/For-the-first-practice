@@ -1,67 +1,95 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="neon">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no" />
-<meta name="theme-color" content="#080b10" />
+<meta name="theme-color" content="#070a10" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<title>2048小游戏（尹子豪是我儿）</title>
+<meta name="format-detection" content="telephone=no" />
+<title>2048（yzh是我儿）</title>
 <style>
-/* ============ 主题变量 ============ */
+/* ==========================================================
+   1. 主题变量
+   ========================================================== */
 html[data-theme="neon"]{
-  --bg:#080b10; --panel:#111923; --cell:#18222e;
-  --text:#e8f1ff; --muted:#6f8296; --accent:#4cc9f0;
-  --v2:#1b2b3d;    --t2:#a8c8ea;
-  --v4:#1f3a52;    --t4:#c6e4ff;
-  --v8:#1c5570;    --t8:#d8f6ff;
-  --v16:#187a8a;   --t16:#d6fbff;
-  --v32:#1f9a8a;   --t32:#e2fff8;
-  --v64:#4a9c38;   --t64:#efffe7;
-  --v128:#b3861c;  --t128:#fff8dd;
-  --v256:#c2681f;  --t256:#fff0dd;
-  --v512:#c74434;  --t512:#ffe8e3;
-  --v1024:#9c35a6; --t1024:#fbe9ff;
-  --v2048:#f0b429; --t2048:#2a1d00;
+  --bg:#070a10; --panel:#111923; --cell:#18222e;
+  --text:#e8f1ff; --muted:#7c90a6; --accent:#4cc9f0;
+  --v2:#1b2b3d;--t2:#a8c8ea; --v4:#1f3a52;--t4:#c6e4ff;
+  --v8:#1c5570;--t8:#d8f6ff; --v16:#187a8a;--t16:#d6fbff;
+  --v32:#1f9a8a;--t32:#e2fff8; --v64:#4a9c38;--t64:#efffe7;
+  --v128:#b3861c;--t128:#fff8dd; --v256:#c2681f;--t256:#fff0dd;
+  --v512:#c74434;--t512:#ffe8e3; --v1024:#9c35a6;--t1024:#fbe9ff;
+  --v2048:#f0b429;--t2048:#2a1d00;
   --vsuper:#f5f0ff;--tsuper:#2a1d3d;
-  --glow:0 0 20px rgba(240,180,41,.55), 0 0 42px rgba(240,180,41,.22);
+  --glow:0 0 22px rgba(240,180,41,.55), 0 0 46px rgba(240,180,41,.22);
+  --glass-bg:rgba(255,255,255,.075);
+  --glass-bg-strong:rgba(255,255,255,.12);
+  --glass-border:rgba(255,255,255,.16);
+  --glass-line:rgba(255,255,255,.55);
+  --glass-top:rgba(255,255,255,.22);
+  --glass-shadow:rgba(0,0,0,.5);
+  --accent-glass:rgba(76,201,240,.36);
+  --accent-line:rgba(150,225,255,.8);
+  --accent-shadow:rgba(76,201,240,.5);
+  --accent-text:#04121a;
+  --aurora-1:rgba(76,201,240,.24);
+  --aurora-2:rgba(142,92,255,.22);
+  --aurora-3:rgba(240,180,41,.13);
 }
 html[data-theme="classic"]{
-  --bg:#faf8ef; --panel:#bbada0; --cell:#cdc1b4;
-  --text:#5c534b; --muted:#8f8579; --accent:#f2b179;
-  --v2:#eee4da;    --t2:#776e65;
-  --v4:#ede0c8;    --t4:#776e65;
-  --v8:#f2b179;    --t8:#f9f6f2;
-  --v16:#f59563;   --t16:#f9f6f2;
-  --v32:#f67c5f;   --t32:#f9f6f2;
-  --v64:#f65e3b;   --t64:#f9f6f2;
-  --v128:#edcf72;  --t128:#f9f6f2;
-  --v256:#edcc61;  --t256:#f9f6f2;
-  --v512:#edc850;  --t512:#f9f6f2;
-  --v1024:#edc53f; --t1024:#f9f6f2;
-  --v2048:#edc22e; --t2048:#f9f6f2;
+  --bg:#f7f2e6; --panel:#bbada0; --cell:#cdc1b4;
+  --text:#5c534b; --muted:#9a8f83; --accent:#f2b179;
+  --v2:#eee4da;--t2:#776e65; --v4:#ede0c8;--t4:#776e65;
+  --v8:#f2b179;--t8:#f9f6f2; --v16:#f59563;--t16:#f9f6f2;
+  --v32:#f67c5f;--t32:#f9f6f2; --v64:#f65e3b;--t64:#f9f6f2;
+  --v128:#edcf72;--t128:#f9f6f2; --v256:#edcc61;--t256:#f9f6f2;
+  --v512:#edc850;--t512:#f9f6f2; --v1024:#edc53f;--t1024:#f9f6f2;
+  --v2048:#edc22e;--t2048:#f9f6f2;
   --vsuper:#3c3a32;--tsuper:#f9f6f2;
   --glow:0 0 18px rgba(237,194,46,.7);
+  --glass-bg:rgba(255,255,255,.5);
+  --glass-bg-strong:rgba(255,255,255,.66);
+  --glass-border:rgba(255,255,255,.8);
+  --glass-line:rgba(255,255,255,.98);
+  --glass-top:rgba(255,255,255,.85);
+  --glass-shadow:rgba(120,100,80,.3);
+  --accent-glass:rgba(242,177,121,.72);
+  --accent-line:rgba(255,235,215,.95);
+  --accent-shadow:rgba(242,177,121,.55);
+  --accent-text:#fff;
+  --aurora-1:rgba(242,177,121,.38);
+  --aurora-2:rgba(245,149,99,.28);
+  --aurora-3:rgba(237,194,46,.24);
 }
 html[data-theme="macaron"]{
   --bg:#fdf6f8; --panel:#f0dfe6; --cell:#e8d3dc;
-  --text:#6b5560; --muted:#9b8792; --accent:#f29bb5;
-  --v2:#f7e8ef;    --t2:#8a6274;
-  --v4:#fbe3d6;    --t4:#96604a;
-  --v8:#ffe6c7;    --t8:#9a6a2e;
-  --v16:#d9f0d4;   --t16:#4f7a48;
-  --v32:#cfeadf;   --t32:#3c6f5f;
-  --v64:#d6e4f7;   --t64:#3f5d80;
-  --v128:#e2dcf7;  --t128:#5a4f80;
-  --v256:#f6d9e3;  --t256:#8a4f66;
-  --v512:#f9cfc9;  --t512:#8a4a44;
-  --v1024:#e8d3f5; --t1024:#6b4a80;
-  --v2048:#ffd98a; --t2048:#5a3d00;
+  --text:#6b5560; --muted:#a4909b; --accent:#f29bb5;
+  --v2:#f7e8ef;--t2:#8a6274; --v4:#fbe3d6;--t4:#96604a;
+  --v8:#ffe6c7;--t8:#9a6a2e; --v16:#d9f0d4;--t16:#4f7a48;
+  --v32:#cfeadf;--t32:#3c6f5f; --v64:#d6e4f7;--t64:#3f5d80;
+  --v128:#e2dcf7;--t128:#5a4f80; --v256:#f6d9e3;--t256:#8a4f66;
+  --v512:#f9cfc9;--t512:#8a4a44; --v1024:#e8d3f5;--t1024:#6b4a80;
+  --v2048:#ffd98a;--t2048:#5a3d00;
   --vsuper:#c9b8ff;--tsuper:#2e2450;
   --glow:0 0 18px rgba(255,200,90,.75);
+  --glass-bg:rgba(255,255,255,.5);
+  --glass-bg-strong:rgba(255,255,255,.66);
+  --glass-border:rgba(255,255,255,.82);
+  --glass-line:rgba(255,255,255,.98);
+  --glass-top:rgba(255,255,255,.85);
+  --glass-shadow:rgba(150,110,130,.28);
+  --accent-glass:rgba(242,155,181,.7);
+  --accent-line:rgba(255,225,235,.95);
+  --accent-shadow:rgba(242,155,181,.55);
+  --accent-text:#fff;
+  --aurora-1:rgba(242,155,181,.38);
+  --aurora-2:rgba(180,160,240,.3);
+  --aurora-3:rgba(255,215,150,.3);
 }
 
-/* ============ 基础 ============ */
+/* ==========================================================
+   2. 基础
+   ========================================================== */
 *,*::before,*::after{box-sizing:border-box;}
 html,body{
   margin:0;padding:0;height:100%;overflow:hidden;
@@ -72,13 +100,63 @@ html,body{
   -webkit-tap-highlight-color:transparent;
   -webkit-touch-callout:none;
   user-select:none;-webkit-user-select:none;
-  transition:background-color .25s ease,color .25s ease;
+  transition:background-color .3s ease,color .3s ease;
 }
 button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;}
 
-/* ============ 布局 ============ */
+.aurora{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(58% 44% at 14% 6%,  var(--aurora-1) 0%, transparent 70%),
+    radial-gradient(54% 40% at 88% 20%, var(--aurora-2) 0%, transparent 70%),
+    radial-gradient(70% 48% at 50% 102%,var(--aurora-3) 0%, transparent 72%);
+  animation:auroraDrift 26s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes auroraDrift{
+  0%  {transform:translate3d(-2%,-1%,0) scale(1.00);}
+  50% {transform:translate3d(2.5%,2%,0) scale(1.07);}
+  100%{transform:translate3d(-1%,3%,0) scale(1.03);}
+}
+
+/* ==========================================================
+   3. 玻璃核心
+   ========================================================== */
+.glass{
+  position:relative;isolation:isolate;
+  background-color:var(--glass-bg);
+  background-image:linear-gradient(180deg,
+      var(--glass-top) 0%,
+      rgba(255,255,255,.05) 34%,
+      rgba(255,255,255,0) 62%);
+  -webkit-backdrop-filter:blur(22px) saturate(185%);
+          backdrop-filter:blur(22px) saturate(185%);
+  box-shadow:
+    inset 0  1px 0 0 var(--glass-top),
+    inset 0 -1px 0 0 rgba(0,0,0,.10),
+    0 10px 28px -10px var(--glass-shadow),
+    0  2px  8px  -3px var(--glass-shadow);
+  transition:background-color .28s ease,box-shadow .28s ease;
+}
+.glass::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(145deg,
+      var(--glass-line) 0%,
+      rgba(255,255,255,.06) 24%,
+      rgba(255,255,255,0)  48%,
+      rgba(255,255,255,.06) 72%,
+      var(--glass-line) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none;
+}
+
+/* ==========================================================
+   4. 布局
+   ========================================================== */
 .app{
-  position:fixed;inset:0;display:flex;flex-direction:column;gap:8px;
+  position:fixed;inset:0;z-index:1;
+  display:flex;flex-direction:column;gap:8px;
   padding:
     calc(env(safe-area-inset-top,0px) + 10px)
     calc(env(safe-area-inset-right,0px) + 12px)
@@ -86,23 +164,38 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     calc(env(safe-area-inset-left,0px) + 12px);
 }
 .hud{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto;}
-.logo{margin:0;font-size:clamp(22px,7vw,30px);font-weight:900;letter-spacing:-.03em;
+.logo{
+  margin:0;font-size:clamp(22px,7vw,30px);font-weight:900;letter-spacing:-.03em;
   background:linear-gradient(120deg,var(--accent),var(--text));
-  -webkit-background-clip:text;background-clip:text;color:transparent;}
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
 .sub{margin:2px 0 0;font-size:11px;color:var(--muted);}
 .hud-right{display:flex;align-items:stretch;gap:8px;}
+
 .score-card{
-  position:relative;min-width:84px;padding:6px 12px;border-radius:12px;
-  background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;min-width:82px;padding:6px 12px;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
 .score-label{font-size:10px;letter-spacing:.08em;color:var(--muted);}
 .score-value{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15;}
-.stat-col{display:flex;flex-direction:column;justify-content:center;gap:3px;font-size:11px;color:var(--muted);}
+.stat-col{
+  display:flex;flex-direction:column;justify-content:center;gap:2px;
+  font-size:10.5px;line-height:1.4;color:var(--muted);
+}
 .stat-col b{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums;}
 
+/* HUD 音效小按钮 */
+.icon-btn{
+  flex:0 0 auto;width:42px;height:42px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;line-height:1;
+  align-self:center;
+}
+
 .score-pop{
-  position:absolute;left:50%;top:4px;transform:translateX(-50%);
+  position:absolute;left:50%;top:3px;transform:translateX(-50%);
   font-size:13px;font-weight:800;color:var(--accent);pointer-events:none;
+  text-shadow:0 0 12px var(--accent-shadow);
   animation:floatUp .7s ease-out forwards;
 }
 @keyframes floatUp{
@@ -111,23 +204,29 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   100%{opacity:0;transform:translate(-50%,-26px) scale(1.05);}
 }
 
-/* 棋盘区 */
+/* 棋盘 */
 .stage{flex:1 1 auto;min-height:0;min-width:0;overflow:hidden;
   display:flex;align-items:center;justify-content:center;}
-.board{position:relative;border-radius:16px;background:var(--panel);
-  transition:background-color .25s ease;touch-action:none;}
+.board{
+  position:relative;border-radius:18px;background:var(--panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 -1px 0 rgba(0,0,0,.22),
+    0 14px 34px -16px rgba(0,0,0,.6);
+  transition:background-color .3s ease;
+  touch-action:none;
+}
 .board-cells{
   position:absolute;inset:var(--gap,8px);display:grid;
   grid-template-columns:repeat(var(--n,4),1fr);
   grid-template-rows:repeat(var(--n,4),1fr);
   gap:var(--gap,8px);
 }
-.cell{border-radius:9px;background:var(--cell);transition:background-color .25s ease;}
+.cell{border-radius:9px;background:var(--cell);transition:background-color .3s ease;}
 
 /* 方块 */
 .tile{
-  position:absolute;top:0;left:0;
-  will-change:transform;
+  position:absolute;top:0;left:0;will-change:transform;
   transition:transform 110ms cubic-bezier(.25,.8,.35,1);
   z-index:2;
 }
@@ -136,18 +235,21 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   width:100%;height:100%;display:flex;align-items:center;justify-content:center;
   border-radius:9px;font-weight:900;letter-spacing:-.03em;
   font-variant-numeric:tabular-nums;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -2px 6px rgba(0,0,0,.12);
   transition:background-color .16s ease,color .16s ease,box-shadow .2s ease;
   will-change:transform;
 }
-.tile[data-v="2"] .tile-inner{background:var(--v2);color:var(--t2);}
-.tile[data-v="4"] .tile-inner{background:var(--v4);color:var(--t4);}
-.tile[data-v="8"] .tile-inner{background:var(--v8);color:var(--t8);}
-.tile[data-v="16"] .tile-inner{background:var(--v16);color:var(--t16);}
-.tile[data-v="32"] .tile-inner{background:var(--v32);color:var(--t32);}
-.tile[data-v="64"] .tile-inner{background:var(--v64);color:var(--t64);}
-.tile[data-v="128"] .tile-inner{background:var(--v128);color:var(--t128);}
-.tile[data-v="256"] .tile-inner{background:var(--v256);color:var(--t256);}
-.tile[data-v="512"] .tile-inner{background:var(--v512);color:var(--t512);}
+.tile[data-v="2"]    .tile-inner{background:var(--v2);   color:var(--t2);}
+.tile[data-v="4"]    .tile-inner{background:var(--v4);   color:var(--t4);}
+.tile[data-v="8"]    .tile-inner{background:var(--v8);   color:var(--t8);}
+.tile[data-v="16"]   .tile-inner{background:var(--v16);  color:var(--t16);}
+.tile[data-v="32"]   .tile-inner{background:var(--v32);  color:var(--t32);}
+.tile[data-v="64"]   .tile-inner{background:var(--v64);  color:var(--t64);}
+.tile[data-v="128"]  .tile-inner{background:var(--v128); color:var(--t128);}
+.tile[data-v="256"]  .tile-inner{background:var(--v256); color:var(--t256);}
+.tile[data-v="512"]  .tile-inner{background:var(--v512); color:var(--t512);}
 .tile[data-v="1024"] .tile-inner{background:var(--v1024);color:var(--t1024);}
 .tile[data-v="2048"] .tile-inner{background:var(--v2048);color:var(--t2048);box-shadow:var(--glow);}
 .tile.is-super .tile-inner{background:var(--vsuper);color:var(--tsuper);box-shadow:var(--glow);}
@@ -157,711 +259,296 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .tile.is-merged .tile-inner{animation:pop .19s ease-out;}
 @keyframes pop{0%{transform:scale(1);}45%{transform:scale(1.2);}100%{transform:scale(1);}}
 
-/* 工具栏 */
-.toolbar{flex:0 0 auto;display:flex;gap:8px;justify-content:center;}
+/* ==========================================================
+   5. 液态玻璃按钮（华为式光影）
+   ========================================================== */
+.toolbar{
+  flex:0 0 auto;display:flex;gap:9px;justify-content:center;
+  padding:2px 0 4px;
+}
 .btn{
-  flex:1 1 0;min-width:0;height:44px;border-radius:12px;
-  background:var(--panel);color:var(--text);font-size:13px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;gap:4px;
-  transition:transform .12s ease,background-color .2s ease,opacity .2s ease;
+  position:relative;flex:1 1 0;min-width:0;height:46px;
+  border-radius:15px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-size:13px;font-weight:700;letter-spacing:.01em;
+  color:var(--text);
+  overflow:hidden;isolation:isolate;
+  background-color:var(--glass-bg);
+  background-image:linear-gradient(180deg,
+      var(--glass-top) 0%,
+      rgba(255,255,255,.05) 32%,
+      rgba(255,255,255,0) 60%);
+  -webkit-backdrop-filter:blur(22px) saturate(185%);
+          backdrop-filter:blur(22px) saturate(185%);
+  box-shadow:
+    inset 0  1px 0 0 var(--glass-top),
+    inset 0 -1px 0 0 rgba(0,0,0,.10),
+    0 10px 26px -10px var(--glass-shadow),
+    0  2px  8px  -3px var(--glass-shadow);
+  transition:
+    background-color .24s ease,
+    box-shadow .28s ease,
+    transform 380ms cubic-bezier(.34,1.56,.64,1);
+  -webkit-user-select:none;user-select:none;
+  touch-action:manipulation;
+  outline:none;
 }
-.btn:active{transform:scale(.94);}
-.btn:disabled{opacity:.4;transform:none;}
-.btn.primary{background:var(--accent);color:#08131a;}
-html[data-theme="classic"] .btn.primary,
-html[data-theme="macaron"] .btn.primary{color:#fff;}
-.badge{
-  font-size:10px;font-weight:800;line-height:1;padding:2px 5px;border-radius:999px;
-  background:var(--accent);color:#08131a;
+.btn:focus-visible{
+  box-shadow:
+    inset 0 1px 0 0 var(--glass-top),
+    0 0 0 2px var(--accent-shadow),
+    0 10px 26px -10px var(--glass-shadow);
 }
-html[data-theme="classic"] .badge,html[data-theme="macaron"] .badge{color:#fff;}
 
-/* 弹窗 */
+/* 边缘折射描边（常态） */
+.btn::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(145deg,
+      var(--glass-line) 0%,
+      rgba(255,255,255,.05) 22%,
+      rgba(255,255,255,0)  48%,
+      rgba(255,255,255,.05) 74%,
+      var(--glass-line) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none;z-index:2;
+  transition:filter .28s ease;
+}
+
+/* 光泽扫过层（按下触发） */
+.btn::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(105deg,
+      transparent 30%,
+      rgba(255,255,255,0)   42%,
+      rgba(255,255,255,.55) 50%,
+      rgba(255,255,255,0)   58%,
+      transparent 70%);
+  opacity:0;pointer-events:none;z-index:1;
+  transform:translateX(-100%);
+  mix-blend-mode:screen;
+}
+
+/* 按下：缩放 + 内阴影 + 边缘发光 + 光扫 */
+.btn.is-pressed,
+.btn:active{
+  transform:scale(.93);
+  transition:
+    background-color .12s ease,
+    box-shadow .12s ease,
+    transform 90ms cubic-bezier(.4,0,.6,1);
+  background-color:var(--glass-bg-strong);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255,255,255,.45),
+    inset 0 7px 18px -8px rgba(0,0,0,.5),
+    0 0 0 1px rgba(255,255,255,.22),
+    0 0 18px 2px var(--accent-shadow),
+    0 4px 14px -8px var(--glass-shadow);
+}
+.btn.is-pressed::after,
+.btn:active::after{
+  background:linear-gradient(145deg,
+      rgba(255,255,255,.95) 0%,
+      rgba(255,255,255,.25) 30%,
+      rgba(255,255,255,.08) 50%,
+      rgba(255,255,255,.25) 70%,
+      rgba(255,255,255,.95) 100%);
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.7))
+         drop-shadow(0 0 10px var(--accent-shadow));
+}
+.btn.is-pressed::before,
+.btn:active::before{
+  opacity:1;
+  animation:sheenSweep 680ms cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes sheenSweep{
+  0%   {transform:translateX(-100%);}
+  100% {transform:translateX(100%);}
+}
+
+.btn:disabled{
+  opacity:.38;
+  transform:none;
+  box-shadow:
+    inset 0 1px 0 0 var(--glass-top),
+    0 4px 12px -8px var(--glass-shadow);
+}
+.btn:disabled::before,
+.btn:disabled::after{animation:none;}
+
+/* 主按钮 */
+.btn.primary{
+  background-color:var(--accent-glass);
+  background-image:linear-gradient(180deg,
+      rgba(255,255,255,.4) 0%,
+      rgba(255,255,255,.1) 34%,
+      rgba(255,255,255,0)  62%);
+  color:var(--accent-text);
+  box-shadow:
+    inset 0  1px 0 0 rgba(255,255,255,.55),
+    inset 0 -1px 0 0 rgba(0,0,0,.08),
+    0 10px 28px -10px var(--accent-shadow),
+    0  2px  8px  -3px var(--glass-shadow);
+}
+.btn.primary::after{
+  background:linear-gradient(145deg,
+      var(--accent-line) 0%,
+      rgba(255,255,255,.08) 24%,
+      rgba(255,255,255,0)   48%,
+      rgba(255,255,255,.08) 74%,
+      var(--accent-line) 100%);
+}
+
+/* JS 动态涟漪 & 触点光晕 */
+.ripple{
+  position:absolute;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,
+      rgba(255,255,255,.7) 0%,
+      rgba(255,255,255,.3) 28%,
+      rgba(255,255,255,.08) 52%,
+      rgba(255,255,255,0)   70%);
+  transform:scale(0);
+  mix-blend-mode:screen;
+  animation:rippleExpand 780ms cubic-bezier(.2,.7,.3,1) forwards;
+}
+@supports (background: color-mix(in srgb, white, white)) {
+  .ripple{
+    background:radial-gradient(circle,
+        color-mix(in srgb, var(--accent) 60%, white) 0%,
+        color-mix(in srgb, var(--accent) 30%, transparent) 35%,
+        color-mix(in srgb, var(--accent) 12%, transparent) 55%,
+        transparent 72%);
+  }
+  .touch-glow{
+    box-shadow:
+      0 0 22px 9px color-mix(in srgb, var(--accent) 40%, transparent),
+      0 0 46px 18px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+}
+@keyframes rippleExpand{
+  0%   {transform:scale(0); opacity:.95;}
+  55%  {                    opacity:.55;}
+  100% {transform:scale(1); opacity:0;}
+}
+
+.touch-glow{
+  position:absolute;width:0;height:0;pointer-events:none;z-index:1;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:
+    0 0 22px 9px rgba(255,255,255,.4),
+    0 0 46px 18px rgba(255,255,255,.14);
+  animation:glowBurst 640ms ease-out forwards;
+}
+@keyframes glowBurst{
+  0%   {opacity:0; transform:translate(-50%,-50%) scale(.35);}
+  38%  {opacity:1;}
+  100% {opacity:0; transform:translate(-50%,-50%) scale(1.15);}
+}
+
+.badge{
+  font-size:10px;font-weight:800;line-height:1;padding:3px 6px;border-radius:999px;
+  color:var(--accent-text);
+  background-color:var(--accent-glass);
+  -webkit-backdrop-filter:blur(10px) saturate(180%);
+          backdrop-filter:blur(10px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.5),
+    0 2px 6px -2px var(--accent-shadow);
+}
+
+/* ==========================================================
+   6. 彩蛋 Toast
+   ========================================================== */
+.egg-toast{
+  position:fixed;left:50%;top:20%;
+  transform:translate(-50%,-18px) scale(.92);
+  z-index:55;
+  display:flex;align-items:center;gap:10px;
+  padding:14px 22px;
+  border-radius:18px;
+  background-color:var(--glass-bg-strong);
+  background-image:linear-gradient(180deg,
+      var(--glass-top) 0%,
+      rgba(255,255,255,.05) 35%,
+      rgba(255,255,255,0)  65%);
+  -webkit-backdrop-filter:blur(28px) saturate(200%);
+          backdrop-filter:blur(28px) saturate(200%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-top),
+    inset 0 -1px 0 rgba(0,0,0,.1),
+    0 20px 50px -18px var(--glass-shadow),
+    0 0 30px -6px var(--accent-shadow),
+    0 6px 16px -6px var(--glass-shadow);
+  color:var(--text);
+  font-size:15px;font-weight:700;letter-spacing:.01em;
+  white-space:nowrap;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease,transform .5s cubic-bezier(.34,1.56,.64,1);
+  max-width:88vw;
+}
+.egg-toast::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(150deg,
+      var(--glass-line) 0%,
+      rgba(255,255,255,.06) 30%,
+      rgba(255,255,255,0)  50%,
+      rgba(255,255,255,.06) 70%,
+      var(--glass-line) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none;
+}
+.egg-toast.show{
+  opacity:1;
+  transform:translate(-50%,0) scale(1);
+}
+.egg-emoji{font-size:20px;line-height:1;filter:drop-shadow(0 0 10px var(--accent-shadow));}
+.egg-text{overflow:hidden;text-overflow:ellipsis;}
+
+/* ==========================================================
+   7. 弹窗
+   ========================================================== */
 .modal{
-  position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
-  padding:20px;background:rgba(0,0,0,.55);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  opacity:0;pointer-events:none;transition:opacity .22s ease;
+  position:fixed;inset:0;z-index:60;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  background:rgba(0,0,0,.42);
+  -webkit-backdrop-filter:blur(10px) saturate(140%);
+          backdrop-filter:blur(10px) saturate(140%);
+  opacity:0;pointer-events:none;
+  transition:opacity .24s ease;
 }
 .modal.show{opacity:1;pointer-events:auto;}
 .modal-card{
-  width:min(88vw,360px);max-height:80vh;overflow:auto;
-  background:var(--panel);border-radius:20px;padding:22px 20px;
-  transform:translateY(14px) scale(.95);
-  transition:transform .26s cubic-bezier(.2,.9,.3,1.35);
+  position:relative;
+  width:min(88vw,366px);max-height:80vh;overflow:auto;
+  border-radius:24px;padding:24px 22px;
+  background-color:var(--glass-bg-strong);
+  background-image:linear-gradient(180deg,
+      var(--glass-top) 0%,
+      rgba(255,255,255,.06) 30%,
+      rgba(255,255,255,0)  60%);
+  -webkit-backdrop-filter:blur(30px) saturate(190%);
+          backdrop-filter:blur(30px) saturate(190%);
+  box-shadow:
+    inset 0  1px 0 0 var(--glass-top),
+    inset 0 -1px 0 0 rgba(0,0,0,.10),
+    0 24px 60px -20px var(--glass-shadow),
+    0  6px 18px  -6px var(--glass-shadow);
+  transform:translateY(16px) scale(.94);
+  transition:transform .3s cubic-bezier(.2,.9,.3,1.4);
   -webkit-overflow-scrolling:touch;
 }
-.modal.show .modal-card{transform:none;}
-.modal-card h2{margin:0 0 8px;font-size:20px;font-weight:900;}
-.modal-card p{margin:0 0 14px;font-size:13px;line-height:1.65;color:var(--muted);}
-.modal-card p b{color:var(--text);}
-.modal-card ul{margin:0 0 16px;padding-left:18px;font-size:12.5px;line-height:1.8;color:var(--muted);}
-.modal-actions{display:flex;gap:10px;}
-.modal-actions .btn{height:46px;font-size:14px;}
-
-@media (prefers-reduced-motion:reduce){
-  .tile{transition:none !important;}
-  .tile.is-new .tile-inner,.tile.is-merged .tile-inner,.score-pop{animation:none !important;}
+.modal-card::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(150deg,
+      var(--glass-line) 0%,
+      rgba(255,255,255,.06) 26%,
+      rgba(255,255,255,0)  50%,
+      rgba(255,255,255,.06) 76%,
+      var(--glass-line) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none;
 }
-</style>
-</head>
-<body>
-
-<div class="app">
-  <header class="hud">
-    <div>
-      <h1 class="logo">2048</h1>
-      <p class="sub" id="subText">滑动合并 · 冲击 2048</p>
-    </div>
-    <div class="hud-right">
-      <div class="score-card" id="scoreCard">
-        <span class="score-label">分数</span>
-        <span class="score-value" id="score">0</span>
-      </div>
-      <div class="stat-col">
-        <span>最高 <b id="best">0</b></span>
-        <span>步数 <b id="steps">0</b></span>
-      </div>
-    </div>
-  </header>
-
-  <main class="stage" id="stage">
-    <div class="board" id="board">
-      <div class="board-cells" id="boardCells"></div>
-    </div>
-  </main>
-
-  <footer class="toolbar">
-    <button class="btn primary" id="btnNew">新游戏</button>
-    <button class="btn" id="btnUndo">悔棋<span class="badge" id="undoBadge">0</span></button>
-    <button class="btn" id="btnTheme">主题</button>
-    <button class="btn" id="btnSize">4×4</button>
-    <button class="btn" id="btnAbout" style="flex:0 0 44px;">i</button>
-  </footer>
-</div>
-
-<div class="modal" id="modal">
-  <div class="modal-card">
-    <h2 id="modalTitle"></h2>
-    <div id="modalBody"></div>
-    <div class="modal-actions" id="modalActions"></div>
-  </div>
-</div>
-
-<script>
-(() => {
-'use strict';
-
-/* ==================== 常量 ==================== */
-const MOVE_MS      = 110;
-const SWIPE_MIN    = 22;
-const UNDO_LIMIT   = 3;
-const SIZES        = [4, 5, 6];
-const THEMES       = ['neon', 'classic', 'macaron'];
-const THEME_NAMES  = {neon:'霓虹', classic:'经典', macaron:'马卡龙'};
-
-const LS = {
-  theme: 'g2048:theme',
-  size:  'g2048:size',
-  state: 'g2048:state',
-  best: size => 'g2048:best:' + size
-};
-
-/* ==================== DOM ==================== */
-const $ = id => document.getElementById(id);
-const boardEl = $('board'), cellsEl = $('boardCells'), stageEl = $('stage');
-const scoreEl = $('score'), bestEl = $('best'), stepsEl = $('steps');
-const undoBadge = $('undoBadge'), subText = $('subText');
-const modalEl = $('modal'), modalTitle = $('modalTitle'),
-      modalBody = $('modalBody'), modalActions = $('modalActions');
-
-/* ==================== 状态 ==================== */
-const S = {
-  size: 4, side: 0, cell: 0, gap: 8,
-  grid: [],
-  score: 0, best: 0, steps: 0,
-  won: false, keepPlaying: false, over: false,
-  locked: false, history: [], uid: 0, startTime: 0,
-  moveToken: 0
-};
-
-/* ==================== 工具 ==================== */
-const allTiles = () => {
-  const out = [];
-  for (const row of S.grid) for (const t of row) if (t) out.push(t);
-  return out;
-};
-const fmtTime = ms => {
-  const s = Math.floor(ms / 1000);
-  return String(Math.floor(s / 60)).padStart(2,'0') + ':' + String(s % 60).padStart(2,'0');
-};
-const vibrate = ms => {
-  if (navigator.vibrate) {
-    try { navigator.vibrate(ms); } catch(e) {}
-  }
-};
-
-/* ==================== 渲染 ==================== */
-function place(el, r, c) {
-  const step = S.cell + S.gap;
-  el.style.width  = S.cell + 'px';
-  el.style.height = S.cell + 'px';
-  el.style.transform =
-    `translate3d(${S.gap + c * step}px, ${S.gap + r * step}px, 0)`;
-}
-
-function applyFont(tile) {
-  const d = String(tile.value).length;
-  const ratio = d <= 2 ? 0.44 : d === 3 ? 0.36 : d === 4 ? 0.30 : 0.24;
-  tile.span.style.fontSize = Math.max(10, Math.round(S.cell * ratio)) + 'px';
-}
-
-function createTile(value, r, c, isNew) {
-  const el = document.createElement('div');
-  el.className = 'tile';
-  el.dataset.v = value;
-  if (value > 2048) el.classList.add('is-super');
-
-  const inner = document.createElement('div');
-  inner.className = 'tile-inner';
-  const span = document.createElement('span');
-  span.textContent = value;
-  inner.appendChild(span);
-  el.appendChild(inner);
-  boardEl.appendChild(el);
-
-  const tile = { id: ++S.uid, value, r, c, el, inner, span };
-  place(el, r, c);
-  applyFont(tile);
-
-  if (isNew) {
-    el.classList.add('is-new');
-    setTimeout(() => el.classList.remove('is-new'), 240);
-  }
-  return tile;
-}
-
-function updateTile(tile) {
-  tile.el.dataset.v = tile.value;
-  tile.el.classList.toggle('is-super', tile.value > 2048);
-  tile.span.textContent = tile.value;
-  applyFont(tile);
-}
-
-/* ==================== 布局 ==================== */
-function layout(force) {
-  const rect = stageEl.getBoundingClientRect();
-  const side = Math.floor(Math.min(rect.width, rect.height));
-  if (side < 60) return;
-  if (!force && side === S.side) return;
-
-  S.side = side;
-  boardEl.style.width  = side + 'px';
-  boardEl.style.height = side + 'px';
-
-  const n = S.size;
-  const gap = Math.max(4, Math.round(side * 0.022));
-  S.gap  = gap;
-  S.cell = (side - gap * (n + 1)) / n;
-
-  boardEl.style.setProperty('--gap', gap + 'px');
-  cellsEl.style.setProperty('--n', n);
-
-  boardEl.classList.add('no-anim');
-  for (const t of allTiles()) { place(t.el, t.r, t.c); applyFont(t); }
-  requestAnimationFrame(() => boardEl.classList.remove('no-anim'));
-}
-
-function buildCells() {
-  cellsEl.innerHTML = '';
-  cellsEl.style.setProperty('--n', S.size);
-  for (let i = 0; i < S.size * S.size; i++) {
-    const d = document.createElement('div');
-    d.className = 'cell';
-    cellsEl.appendChild(d);
-  }
-}
-
-/* ==================== 核心：方向 → 坐标序列 ==================== */
-function getCells(dir, i, n) {
-  const cells = [];
-  for (let j = 0; j < n; j++) {
-    let r, c;
-    if (dir === 'left')       { r = i;         c = j;         }
-    else if (dir === 'right') { r = i;         c = n - 1 - j; }
-    else if (dir === 'up')    { r = j;         c = i;         }
-    else                      { r = n - 1 - j; c = i;         }
-    cells.push([r, c]);
-  }
-  return cells;
-}
-
-function computeMove(dir) {
-  const n = S.size, g = S.grid;
-  const moves = [];
-  const merges = [];
-  let gained = 0, moved = false;
-
-  const next = Array.from({length: n}, () => new Array(n).fill(null));
-
-  for (let i = 0; i < n; i++) {
-    const cells = getCells(dir, i, n);
-    const line = [];
-    for (let k = 0; k < n; k++) {
-      const t = g[cells[k][0]][cells[k][1]];
-      if (t) line.push(t);
-    }
-
-    let out = 0, j = 0;
-    while (j < line.length) {
-      const a = line[j], b = line[j + 1];
-      const [dr, dc] = cells[out];
-
-      if (b && b.value === a.value) {
-        moves.push({ tile: a, r: dr, c: dc });
-        moves.push({ tile: b, r: dr, c: dc });
-        merges.push({ keep: a, remove: b, value: a.value * 2 });
-        next[dr][dc] = a;
-        gained += a.value * 2;
-        moved = true;
-        j += 2;
-      } else {
-        moves.push({ tile: a, r: dr, c: dc });
-        if (a.r !== dr || a.c !== dc) moved = true;
-        next[dr][dc] = a;
-        j += 1;
-      }
-      out++;
-    }
-  }
-  return { moves, merges, gained, moved, next };
-}
-
-/* ==================== 执行移动 ==================== */
-function tryMove(dir) {
-  if (S.locked || S.over) return;
-  if (S.won && !S.keepPlaying) return;
-
-  const res = computeMove(dir);
-  if (!res.moved) return;
-
-  pushHistory();
-  S.locked = true;
-  const token = ++S.moveToken;
-
-  for (const m of res.moves) {
-    m.tile.r = m.r;
-    m.tile.c = m.c;
-    place(m.tile.el, m.r, m.c);
-  }
-  S.grid = res.next;
-
-  setTimeout(() => {
-    if (token !== S.moveToken) return;
-    finishMove(res.merges, res.gained);
-  }, MOVE_MS);
-}
-
-function finishMove(merges, gained) {
-  for (const m of merges) {
-    m.keep.value = m.value;
-    updateTile(m.keep);
-
-    const el = m.keep.el;
-    el.classList.remove('is-merged');
-    void el.offsetWidth;
-    el.classList.add('is-merged');
-    setTimeout(() => el.classList.remove('is-merged'), 240);
-
-    if (m.remove.el.parentNode) m.remove.el.remove();
-  }
-
-  if (gained > 0) {
-    S.score += gained;
-    updateScoreUI();
-    popScore(gained);
-    vibrate(18);
-  }
-
-  addRandomTile();
-  S.steps++;
-  updateStepsUI();
-  S.locked = false;
-  saveState();
-  checkState();
-}
-
-function addRandomTile() {
-  const empties = [];
-  for (let r = 0; r < S.size; r++)
-    for (let c = 0; c < S.size; c++)
-      if (!S.grid[r][c]) empties.push([r, c]);
-  if (!empties.length) return null;
-
-  const [r, c] = empties[(Math.random() * empties.length) | 0];
-  const value = Math.random() < 0.9 ? 2 : 4;
-  const tile = createTile(value, r, c, true);
-  S.grid[r][c] = tile;
-  return tile;
-}
-
-/* ==================== 状态判定 ==================== */
-function checkState() {
-  const n = S.size, g = S.grid;
-
-  if (!S.won && !S.keepPlaying) {
-    let reached = false;
-    for (const row of g) for (const t of row) if (t && t.value >= 2048) reached = true;
-    if (reached) {
-      S.won = true;
-      saveState();
-      showWin();
-      return;
-    }
-  }
-
-  let hasEmpty = false;
-  for (let r = 0; r < n; r++)
-    for (let c = 0; c < n; c++)
-      if (!g[r][c]) hasEmpty = true;
-  if (hasEmpty) return;
-
-  let canGo = false;
-  for (let r = 0; r < n && !canGo; r++) {
-    for (let c = 0; c < n && !canGo; c++) {
-      const v = g[r][c].value;
-      if (c + 1 < n && g[r][c + 1].value === v) canGo = true;
-      if (r + 1 < n && g[r + 1][c].value === v) canGo = true;
-    }
-  }
-  if (!canGo) {
-    S.over = true;
-    saveState();
-    showOver();
-  }
-}
-
-/* ==================== 悔棋 ==================== */
-function pushHistory() {
-  S.history.push({
-    tiles: allTiles().map(t => ({v: t.value, r: t.r, c: t.c})),
-    score: S.score,
-    steps: S.steps,
-    won: S.won,
-    keepPlaying: S.keepPlaying
-  });
-  if (S.history.length > UNDO_LIMIT) S.history.shift();
-  updateUndoUI();
-}
-
-function undo() {
-  if (S.locked || !S.history.length) return;
-  S.moveToken++;
-  const snap = S.history.pop();
-
-  boardEl.querySelectorAll('.tile').forEach(el => el.remove());
-  S.grid = Array.from({length: S.size}, () => new Array(S.size).fill(null));
-  for (const t of snap.tiles) {
-    const tile = createTile(t.v, t.r, t.c);
-    S.grid[t.r][t.c] = tile;
-  }
-  S.score = snap.score;
-  S.steps = snap.steps;
-  S.won = snap.won;
-  S.keepPlaying = snap.keepPlaying;
-  S.over = false;
-  S.locked = false;
-
-  updateScoreUI();
-  updateStepsUI();
-  updateUndoUI();
-  hideModal();
-  saveState();
-}
-
-/* ==================== 新局 ==================== */
-function newGame() {
-  S.moveToken++;
-  boardEl.querySelectorAll('.tile').forEach(el => el.remove());
-  S.grid = Array.from({length: S.size}, () => new Array(S.size).fill(null));
-  S.score = 0;
-  S.steps = 0;
-  S.won = false;
-  S.keepPlaying = false;
-  S.over = false;
-  S.locked = false;
-  S.history = [];
-  S.startTime = Date.now();
-  S.best = getBest(S.size);
-
-  updateScoreUI();
-  updateStepsUI();
-  updateUndoUI();
-  addRandomTile();
-  addRandomTile();
-  hideModal();
-  saveState();
-  $('btnSize').textContent = S.size + '×' + S.size;
-}
-
-/* ==================== 持久化 ==================== */
-function getBest(size) {
-  try { return Number(localStorage.getItem(LS.best(size))) || 0; }
-  catch(e) { return 0; }
-}
-
-function saveState() {
-  const data = {
-    size: S.size,
-    score: S.score,
-    steps: S.steps,
-    won: S.won,
-    keepPlaying: S.keepPlaying,
-    over: S.over,
-    startTime: S.startTime,
-    grid: S.grid.map(row => row.map(t => t ? t.value : 0))
-  };
-  try {
-    localStorage.setItem(LS.state, JSON.stringify(data));
-    localStorage.setItem(LS.size, S.size);
-  } catch(e) {}
-}
-
-function loadState() {
-  let data;
-  try { data = JSON.parse(localStorage.getItem(LS.state) || 'null'); }
-  catch(e) { data = null; }
-
-  if (!data || !SIZES.includes(data.size)) return false;
-  if (!Array.isArray(data.grid) || data.grid.length !== data.size) return false;
-
-  S.moveToken++;
-  S.size = data.size;
-  S.score = Number(data.score) || 0;
-  S.steps = Number(data.steps) || 0;
-  S.won = !!data.won;
-  S.keepPlaying = !!data.keepPlaying;
-  S.over = !!data.over;
-  S.startTime = Number(data.startTime) || Date.now();
-  S.best = getBest(S.size);
-  S.history = [];
-  S.locked = false;
-
-  boardEl.querySelectorAll('.tile').forEach(el => el.remove());
-  S.grid = Array.from({length: S.size}, () => new Array(S.size).fill(null));
-  buildCells();
-  layout(true);
-
-  for (let r = 0; r < S.size; r++) {
-    for (let c = 0; c < S.size; c++) {
-      const v = data.grid[r][c];
-      if (v) {
-        const tile = createTile(v, r, c);
-        S.grid[r][c] = tile;
-      }
-    }
-  }
-
-  updateScoreUI();
-  updateStepsUI();
-  updateUndoUI();
-  if (S.over) setTimeout(showOver, 120);
-  return true;
-}
-
-/* ==================== UI 更新 ==================== */
-function updateScoreUI() {
-  scoreEl.textContent = S.score;
-  if (S.score > S.best) {
-    S.best = S.score;
-    try { localStorage.setItem(LS.best(S.size), S.best); } catch(e) {}
-  }
-  bestEl.textContent = S.best;
-}
-function updateStepsUI() { stepsEl.textContent = S.steps; }
-function updateUndoUI() {
-  undoBadge.textContent = S.history.length;
-  $('btnUndo').disabled = S.history.length === 0;
-}
-function popScore(delta) {
-  const el = document.createElement('span');
-  el.className = 'score-pop';
-  el.textContent = '+' + delta;
-  $('scoreCard').appendChild(el);
-  setTimeout(() => el.remove(), 750);
-}
-
-/* ==================== 弹窗 ==================== */
-function openModal(title, bodyHTML, actions) {
-  modalTitle.textContent = title;
-  modalBody.innerHTML = bodyHTML;
-  modalActions.innerHTML = '';
-  actions.forEach(a => {
-    const b = document.createElement('button');
-    b.className = 'btn' + (a.primary ? ' primary' : '');
-    b.textContent = a.text;
-    b.disabled = !!a.disabled;
-    b.onclick = a.fn;
-    modalActions.appendChild(b);
-  });
-  modalEl.classList.add('show');
-}
-function hideModal() { modalEl.classList.remove('show'); }
-
-function showWin() {
-  openModal('达成 2048！',
-    `<p>当前分数 <b>${S.score}</b>，用了 <b>${S.steps}</b> 步。</p>
-     <p>可以继续挑战更大的数字。</p>`,
-    [
-      {text:'继续玩', primary:true, fn:() => {
-        S.keepPlaying = true;
-        hideModal();
-        saveState();
-        checkState();
-      }},
-      {text:'新游戏', fn:newGame}
-    ]
-  );
-  vibrate([20, 40, 20]);
-}
-
-function showOver() {
-  const elapsed = S.startTime ? fmtTime(Date.now() - S.startTime) : '--:--';
-  openModal('游戏结束',
-    `<p>本局分数 <b>${S.score}</b>，步数 <b>${S.steps}</b>，用时 <b>${elapsed}</b>。</p>
-     <p>最高分：<b>${S.best}</b></p>`,
-    [
-      {text:'悔棋', disabled: S.history.length === 0, fn: undo},
-      {text:'新游戏', primary:true, fn:newGame}
-    ]
-  );
-  vibrate(80);
-}
-
-function showAbout() {
-  openModal('关于 2048',
-    `<p><b>技术栈：</b>原生 HTML / CSS / JavaScript，零依赖。</p>
-     <p><b>实现思路：</b>数据层用二维数组维护棋盘，渲染层用绝对定位 + transform 做滑动动画；四个方向复用同一套“线扫描”合并算法。</p>
-     <ul>
-       <li>移动端手势 + 键盘方向键</li>
-       <li>悔棋 3 步、步数统计、主题切换、多尺寸棋盘</li>
-       <li>localStorage 自动存档 / 最高分</li>
-       <li>CSS 动画 + 触觉反馈，适配安全区域</li>
-     </ul>
-     <p>祝你玩得开心，也祝比赛顺利。</p>`,
-    [{text:'知道了', primary:true, fn:hideModal}]
-  );
-}
-
-/* ==================== 主题 / 尺寸 ==================== */
-function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  $('btnTheme').textContent = THEME_NAMES[theme];
-  try { localStorage.setItem(LS.theme, theme); } catch(e) {}
-}
-
-function cycleTheme() {
-  const current = document.documentElement.dataset.theme;
-  const idx = THEMES.indexOf(current);
-  applyTheme(THEMES[(idx + 1) % THEMES.length]);
-}
-
-function cycleSize() {
-  if (S.locked) return;
-  const idx = SIZES.indexOf(S.size);
-  const next = SIZES[(idx + 1) % SIZES.length];
-  S.size = next;
-  S.best = getBest(next);
-  buildCells();
-  layout(true);
-  newGame();
-  $('btnSize').textContent = next + '×' + next;
-}
-
-/* ==================== 手势 / 键盘 ==================== */
-let touchStartX = 0, touchStartY = 0, touchActive = false;
-
-boardEl.addEventListener('touchstart', e => {
-  if (e.touches.length !== 1) return;
-  const t = e.touches[0];
-  touchStartX = t.clientX;
-  touchStartY = t.clientY;
-  touchActive = true;
-}, {passive:true});
-
-boardEl.addEventListener('touchmove', e => {
-  if (touchActive) e.preventDefault();
-}, {passive:false});
-
-boardEl.addEventListener('touchend', e => {
-  if (!touchActive) return;
-  touchActive = false;
-  const t = e.changedTouches[0];
-  const dx = t.clientX - touchStartX;
-  const dy = t.clientY - touchStartY;
-  const ax = Math.abs(dx), ay = Math.abs(dy);
-  if (Math.max(ax, ay) < SWIPE_MIN) return;
-  if (ax > ay) tryMove(dx > 0 ? 'right' : 'left');
-  else tryMove(dy > 0 ? 'down' : 'up');
-}, {passive:true});
-
-const keyMap = {
-  ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down',
-  a:'left', d:'right', w:'up', s:'down'
-};
-window.addEventListener('keydown', e => {
-  if (e.metaKey || e.ctrlKey || e.altKey) return;
-  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-  const dir = keyMap[key];
-  if (dir) {
-    e.preventDefault();
-    tryMove(dir);
-  }
-});
-
-/* ==================== 初始化 ==================== */
-let resizeRaf = 0;
-function onResize() {
-  cancelAnimationFrame(resizeRaf);
-  resizeRaf = requestAnimationFrame(() => layout(false));
-}
-window.addEventListener('resize', onResize);
-window.addEventListener('orientationchange', () => setTimeout(() => layout(true), 120));
-
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) saveState();
-});
-
-function init() {
-  let theme = 'neon';
-  try { theme = localStorage.getItem(LS.theme) || 'neon'; } catch(e) {}
-  if (!THEMES.includes(theme)) theme = 'neon';
-  applyTheme(theme);
-
-  $('btnNew').addEventListener('click', newGame);
-  $('btnUndo').addEventListener('click', undo);
-  $('btnTheme').addEventListener('click', cycleTheme);
-  $('btnSize').addEventListener('click', cycleSize);
-  $('btnAbout').addEventListener('click', showAbout);
-
-  let savedSize = 4;
-  try { savedSize = Number(localStorage.getItem(LS.size)) || 4; } catch(e) {}
-  if (!SIZES.includes(savedSize)) savedSize = 4;
-  S.size = savedSize;
-  S.best = getBest(S.size);
-
-  buildCells();
-  layout(true);
-
-  if (!loadState()) {
-    newGame();
-  }
-  $('btnSize').textContent = S.size + '×' + S.size;
-  subText.textContent = `滑动合并 · 冲击 2048 · ${THEME_NAMES[document.documentElement.dataset.theme]}`;
-}
-
-init();
-})();
-</script>
-</body>
-</html>
+.modal.show .modal-
