@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#070a10" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="format-detection" content="telephone=no" />
-<title>2048（yzh是我儿）</title>
+<title>2048</title>
 <style>
 /* ==========================================================
    1. 主题变量
@@ -24,7 +24,6 @@ html[data-theme="neon"]{
   --glow:0 0 22px rgba(240,180,41,.55), 0 0 46px rgba(240,180,41,.22);
   --glass-bg:rgba(255,255,255,.075);
   --glass-bg-strong:rgba(255,255,255,.12);
-  --glass-border:rgba(255,255,255,.16);
   --glass-line:rgba(255,255,255,.55);
   --glass-top:rgba(255,255,255,.22);
   --glass-shadow:rgba(0,0,0,.5);
@@ -49,7 +48,6 @@ html[data-theme="classic"]{
   --glow:0 0 18px rgba(237,194,46,.7);
   --glass-bg:rgba(255,255,255,.5);
   --glass-bg-strong:rgba(255,255,255,.66);
-  --glass-border:rgba(255,255,255,.8);
   --glass-line:rgba(255,255,255,.98);
   --glass-top:rgba(255,255,255,.85);
   --glass-shadow:rgba(120,100,80,.3);
@@ -74,7 +72,6 @@ html[data-theme="macaron"]{
   --glow:0 0 18px rgba(255,200,90,.75);
   --glass-bg:rgba(255,255,255,.5);
   --glass-bg-strong:rgba(255,255,255,.66);
-  --glass-border:rgba(255,255,255,.82);
   --glass-line:rgba(255,255,255,.98);
   --glass-top:rgba(255,255,255,.85);
   --glass-shadow:rgba(150,110,130,.28);
@@ -88,14 +85,15 @@ html[data-theme="macaron"]{
 }
 
 /* ==========================================================
-   2. 基础
+   2. 基础兼容
    ========================================================== */
 *,*::before,*::after{box-sizing:border-box;}
 html,body{
-  margin:0;padding:0;height:100%;overflow:hidden;
-  overscroll-behavior:none;background:var(--bg);color:var(--text);
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
-    "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  margin:0;padding:0;height:100%;
+  overflow:hidden;
+  overscroll-behavior:none;
+  background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   -webkit-text-size-adjust:100%;
   -webkit-tap-highlight-color:transparent;
   -webkit-touch-callout:none;
@@ -104,8 +102,11 @@ html,body{
 }
 button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;}
 
+/* 极光背景层 */
 .aurora{
-  position:fixed;inset:0;z-index:0;pointer-events:none;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  z-index:0;pointer-events:none;
   background:
     radial-gradient(58% 44% at 14% 6%,  var(--aurora-1) 0%, transparent 70%),
     radial-gradient(54% 40% at 88% 20%, var(--aurora-2) 0%, transparent 70%),
@@ -120,48 +121,17 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 }
 
 /* ==========================================================
-   3. 玻璃核心
-   ========================================================== */
-.glass{
-  position:relative;isolation:isolate;
-  background-color:var(--glass-bg);
-  background-image:linear-gradient(180deg,
-      var(--glass-top) 0%,
-      rgba(255,255,255,.05) 34%,
-      rgba(255,255,255,0) 62%);
-  -webkit-backdrop-filter:blur(22px) saturate(185%);
-          backdrop-filter:blur(22px) saturate(185%);
-  box-shadow:
-    inset 0  1px 0 0 var(--glass-top),
-    inset 0 -1px 0 0 rgba(0,0,0,.10),
-    0 10px 28px -10px var(--glass-shadow),
-    0  2px  8px  -3px var(--glass-shadow);
-  transition:background-color .28s ease,box-shadow .28s ease;
-}
-.glass::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
-  background:linear-gradient(145deg,
-      var(--glass-line) 0%,
-      rgba(255,255,255,.06) 24%,
-      rgba(255,255,255,0)  48%,
-      rgba(255,255,255,.06) 72%,
-      var(--glass-line) 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  pointer-events:none;
-}
-
-/* ==========================================================
-   4. 布局
+   3. 布局兼容 (修复 inset 导致的崩溃)
    ========================================================== */
 .app{
-  position:fixed;inset:0;z-index:1;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  z-index:1;
   display:flex;flex-direction:column;gap:8px;
-  padding:
-    calc(env(safe-area-inset-top,0px) + 10px)
-    calc(env(safe-area-inset-right,0px) + 12px)
-    calc(env(safe-area-inset-bottom,0px) + 10px)
-    calc(env(safe-area-inset-left,0px) + 12px);
+  /* 使用安全的 padding，避免浏览器计算 env() 失败导致整体崩溃 */
+  padding:12px;
+  padding-top:calc(12px + env(safe-area-inset-top, 0px));
+  padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
 }
 .hud{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto;}
 .logo{
@@ -184,12 +154,10 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 }
 .stat-col b{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums;}
 
-/* HUD 音效小按钮 */
 .icon-btn{
   flex:0 0 auto;width:42px;height:42px;border-radius:13px;
   display:flex;align-items:center;justify-content:center;
-  font-size:17px;line-height:1;
-  align-self:center;
+  font-size:17px;line-height:1;align-self:center;
 }
 
 .score-pop{
@@ -204,7 +172,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   100%{opacity:0;transform:translate(-50%,-26px) scale(1.05);}
 }
 
-/* 棋盘 */
+/* 棋盘区 */
 .stage{flex:1 1 auto;min-height:0;min-width:0;overflow:hidden;
   display:flex;align-items:center;justify-content:center;}
 .board{
@@ -217,7 +185,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   touch-action:none;
 }
 .board-cells{
-  position:absolute;inset:var(--gap,8px);display:grid;
+  position:absolute;
+  top:var(--gap,8px); left:var(--gap,8px); right:var(--gap,8px); bottom:var(--gap,8px);
+  display:grid;
   grid-template-columns:repeat(var(--n,4),1fr);
   grid-template-rows:repeat(var(--n,4),1fr);
   gap:var(--gap,8px);
@@ -260,7 +230,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 @keyframes pop{0%{transform:scale(1);}45%{transform:scale(1.2);}100%{transform:scale(1);}}
 
 /* ==========================================================
-   5. 液态玻璃按钮（华为式光影）
+   4. 按钮 (华为光影)
    ========================================================== */
 .toolbar{
   flex:0 0 auto;display:flex;gap:9px;justify-content:center;
@@ -274,10 +244,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   color:var(--text);
   overflow:hidden;isolation:isolate;
   background-color:var(--glass-bg);
-  background-image:linear-gradient(180deg,
-      var(--glass-top) 0%,
-      rgba(255,255,255,.05) 32%,
-      rgba(255,255,255,0) 60%);
+  background-image:linear-gradient(180deg, var(--glass-top) 0%, rgba(255,255,255,.05) 32%, rgba(255,255,255,0) 60%);
   -webkit-backdrop-filter:blur(22px) saturate(185%);
           backdrop-filter:blur(22px) saturate(185%);
   box-shadow:
@@ -285,58 +252,36 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     inset 0 -1px 0 0 rgba(0,0,0,.10),
     0 10px 26px -10px var(--glass-shadow),
     0  2px  8px  -3px var(--glass-shadow);
-  transition:
-    background-color .24s ease,
-    box-shadow .28s ease,
-    transform 380ms cubic-bezier(.34,1.56,.64,1);
+  transition: background-color .24s ease, box-shadow .28s ease, transform 380ms cubic-bezier(.34,1.56,.64,1);
   -webkit-user-select:none;user-select:none;
   touch-action:manipulation;
   outline:none;
 }
-.btn:focus-visible{
-  box-shadow:
-    inset 0 1px 0 0 var(--glass-top),
-    0 0 0 2px var(--accent-shadow),
-    0 10px 26px -10px var(--glass-shadow);
+
+/* 兼容性修复：确保老手机有背景色 */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .btn{ background-color:var(--panel) !important; }
+  .btn.primary{ background-color:var(--accent) !important; }
 }
 
-/* 边缘折射描边（常态） */
 .btn::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
-  background:linear-gradient(145deg,
-      var(--glass-line) 0%,
-      rgba(255,255,255,.05) 22%,
-      rgba(255,255,255,0)  48%,
-      rgba(255,255,255,.05) 74%,
-      var(--glass-line) 100%);
+  content:"";position:absolute;top:0;left:0;right:0;bottom:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(145deg, var(--glass-line) 0%, rgba(255,255,255,.05) 22%, rgba(255,255,255,0) 48%, rgba(255,255,255,.05) 74%, var(--glass-line) 100%);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask-composite:exclude;
   pointer-events:none;z-index:2;
   transition:filter .28s ease;
 }
-
-/* 光泽扫过层（按下触发） */
 .btn::before{
-  content:"";position:absolute;inset:0;border-radius:inherit;
-  background:linear-gradient(105deg,
-      transparent 30%,
-      rgba(255,255,255,0)   42%,
-      rgba(255,255,255,.55) 50%,
-      rgba(255,255,255,0)   58%,
-      transparent 70%);
+  content:"";position:absolute;top:0;left:0;right:0;bottom:0;border-radius:inherit;
+  background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,0) 42%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 58%, transparent 70%);
   opacity:0;pointer-events:none;z-index:1;
   transform:translateX(-100%);
   mix-blend-mode:screen;
 }
 
-/* 按下：缩放 + 内阴影 + 边缘发光 + 光扫 */
-.btn.is-pressed,
-.btn:active{
+.btn.is-pressed, .btn:active{
   transform:scale(.93);
-  transition:
-    background-color .12s ease,
-    box-shadow .12s ease,
-    transform 90ms cubic-bezier(.4,0,.6,1);
   background-color:var(--glass-bg-strong);
   box-shadow:
     inset 0 1px 0 0 rgba(255,255,255,.45),
@@ -345,210 +290,831 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     0 0 18px 2px var(--accent-shadow),
     0 4px 14px -8px var(--glass-shadow);
 }
-.btn.is-pressed::after,
-.btn:active::after{
-  background:linear-gradient(145deg,
-      rgba(255,255,255,.95) 0%,
-      rgba(255,255,255,.25) 30%,
-      rgba(255,255,255,.08) 50%,
-      rgba(255,255,255,.25) 70%,
-      rgba(255,255,255,.95) 100%);
-  filter:drop-shadow(0 0 5px rgba(255,255,255,.7))
-         drop-shadow(0 0 10px var(--accent-shadow));
+.btn.is-pressed::after, .btn:active::after{
+  background:linear-gradient(145deg, rgba(255,255,255,.95) 0%, rgba(255,255,255,.25) 30%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.25) 70%, rgba(255,255,255,.95) 100%);
+  filter:drop-shadow(0 0 5px rgba(255,255,255,.7)) drop-shadow(0 0 10px var(--accent-shadow));
 }
-.btn.is-pressed::before,
-.btn:active::before{
-  opacity:1;
-  animation:sheenSweep 680ms cubic-bezier(.2,.7,.3,1) forwards;
+.btn.is-pressed::before, .btn:active::before{
+  opacity:1;animation:sheenSweep 680ms cubic-bezier(.2,.7,.3,1) forwards;
 }
-@keyframes sheenSweep{
-  0%   {transform:translateX(-100%);}
-  100% {transform:translateX(100%);}
-}
+@keyframes sheenSweep{ 0%{transform:translateX(-100%);} 100%{transform:translateX(100%);} }
 
-.btn:disabled{
-  opacity:.38;
-  transform:none;
-  box-shadow:
-    inset 0 1px 0 0 var(--glass-top),
-    0 4px 12px -8px var(--glass-shadow);
-}
-.btn:disabled::before,
-.btn:disabled::after{animation:none;}
+.btn:disabled{opacity:.38;transform:none;box-shadow:inset 0 1px 0 0 var(--glass-top), 0 4px 12px -8px var(--glass-shadow);}
+.btn:disabled::before, .btn:disabled::after{animation:none;}
 
-/* 主按钮 */
 .btn.primary{
   background-color:var(--accent-glass);
-  background-image:linear-gradient(180deg,
-      rgba(255,255,255,.4) 0%,
-      rgba(255,255,255,.1) 34%,
-      rgba(255,255,255,0)  62%);
   color:var(--accent-text);
-  box-shadow:
-    inset 0  1px 0 0 rgba(255,255,255,.55),
-    inset 0 -1px 0 0 rgba(0,0,0,.08),
-    0 10px 28px -10px var(--accent-shadow),
-    0  2px  8px  -3px var(--glass-shadow);
 }
-.btn.primary::after{
-  background:linear-gradient(145deg,
-      var(--accent-line) 0%,
-      rgba(255,255,255,.08) 24%,
-      rgba(255,255,255,0)   48%,
-      rgba(255,255,255,.08) 74%,
-      var(--accent-line) 100%);
-}
+html[data-theme="classic"] .btn.primary, html[data-theme="macaron"] .btn.primary{ color:#fff; }
 
-/* JS 动态涟漪 & 触点光晕 */
 .ripple{
   position:absolute;border-radius:50%;pointer-events:none;z-index:1;
-  background:radial-gradient(circle,
-      rgba(255,255,255,.7) 0%,
-      rgba(255,255,255,.3) 28%,
-      rgba(255,255,255,.08) 52%,
-      rgba(255,255,255,0)   70%);
-  transform:scale(0);
-  mix-blend-mode:screen;
+  background:radial-gradient(circle, rgba(255,255,255,.7) 0%, rgba(255,255,255,.3) 28%, rgba(255,255,255,.08) 52%, rgba(255,255,255,0) 70%);
+  transform:scale(0);mix-blend-mode:screen;
   animation:rippleExpand 780ms cubic-bezier(.2,.7,.3,1) forwards;
 }
-@supports (background: color-mix(in srgb, white, white)) {
-  .ripple{
-    background:radial-gradient(circle,
-        color-mix(in srgb, var(--accent) 60%, white) 0%,
-        color-mix(in srgb, var(--accent) 30%, transparent) 35%,
-        color-mix(in srgb, var(--accent) 12%, transparent) 55%,
-        transparent 72%);
-  }
-  .touch-glow{
-    box-shadow:
-      0 0 22px 9px color-mix(in srgb, var(--accent) 40%, transparent),
-      0 0 46px 18px color-mix(in srgb, var(--accent) 14%, transparent);
-  }
-}
-@keyframes rippleExpand{
-  0%   {transform:scale(0); opacity:.95;}
-  55%  {                    opacity:.55;}
-  100% {transform:scale(1); opacity:0;}
-}
+@keyframes rippleExpand{ 0%{transform:scale(0);opacity:.95;} 55%{opacity:.55;} 100%{transform:scale(1);opacity:0;} }
 
 .touch-glow{
-  position:absolute;width:0;height:0;pointer-events:none;z-index:1;
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-  box-shadow:
-    0 0 22px 9px rgba(255,255,255,.4),
-    0 0 46px 18px rgba(255,255,255,.14);
+  position:absolute;width:0;height:0;pointer-events:none;z-index:1;border-radius:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 22px 9px rgba(255,255,255,.4), 0 0 46px 18px rgba(255,255,255,.14);
   animation:glowBurst 640ms ease-out forwards;
 }
-@keyframes glowBurst{
-  0%   {opacity:0; transform:translate(-50%,-50%) scale(.35);}
-  38%  {opacity:1;}
-  100% {opacity:0; transform:translate(-50%,-50%) scale(1.15);}
-}
+@keyframes glowBurst{ 0%{opacity:0;transform:translate(-50%,-50%) scale(.35);} 38%{opacity:1;} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.15);} }
 
 .badge{
   font-size:10px;font-weight:800;line-height:1;padding:3px 6px;border-radius:999px;
-  color:var(--accent-text);
-  background-color:var(--accent-glass);
-  -webkit-backdrop-filter:blur(10px) saturate(180%);
-          backdrop-filter:blur(10px) saturate(180%);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.5),
-    0 2px 6px -2px var(--accent-shadow);
+  color:var(--accent-text);background-color:var(--accent-glass);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 2px 6px -2px var(--accent-shadow);
 }
 
 /* ==========================================================
-   6. 彩蛋 Toast
+   5. 弹窗 & Toast
    ========================================================== */
 .egg-toast{
-  position:fixed;left:50%;top:20%;
-  transform:translate(-50%,-18px) scale(.92);
-  z-index:55;
-  display:flex;align-items:center;gap:10px;
-  padding:14px 22px;
-  border-radius:18px;
+  position:fixed;left:50%;top:20%;transform:translate(-50%,-18px) scale(.92);
+  z-index:55;display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:18px;
   background-color:var(--glass-bg-strong);
-  background-image:linear-gradient(180deg,
-      var(--glass-top) 0%,
-      rgba(255,255,255,.05) 35%,
-      rgba(255,255,255,0)  65%);
-  -webkit-backdrop-filter:blur(28px) saturate(200%);
-          backdrop-filter:blur(28px) saturate(200%);
-  box-shadow:
-    inset 0 1px 0 var(--glass-top),
-    inset 0 -1px 0 rgba(0,0,0,.1),
-    0 20px 50px -18px var(--glass-shadow),
-    0 0 30px -6px var(--accent-shadow),
-    0 6px 16px -6px var(--glass-shadow);
-  color:var(--text);
-  font-size:15px;font-weight:700;letter-spacing:.01em;
-  white-space:nowrap;
-  opacity:0;pointer-events:none;
-  transition:opacity .3s ease,transform .5s cubic-bezier(.34,1.56,.64,1);
-  max-width:88vw;
+  -webkit-backdrop-filter:blur(28px) saturate(200%); backdrop-filter:blur(28px) saturate(200%);
+  box-shadow:inset 0 1px 0 var(--glass-top), 0 20px 50px -18px var(--glass-shadow), 0 0 30px -6px var(--accent-shadow);
+  color:var(--text);font-size:15px;font-weight:700;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .3s ease,transform .5s cubic-bezier(.34,1.56,.64,1);max-width:88vw;
 }
-.egg-toast::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
-  background:linear-gradient(150deg,
-      var(--glass-line) 0%,
-      rgba(255,255,255,.06) 30%,
-      rgba(255,255,255,0)  50%,
-      rgba(255,255,255,.06) 70%,
-      var(--glass-line) 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  pointer-events:none;
-}
-.egg-toast.show{
-  opacity:1;
-  transform:translate(-50%,0) scale(1);
-}
+.egg-toast.show{opacity:1;transform:translate(-50%,0) scale(1);}
 .egg-emoji{font-size:20px;line-height:1;filter:drop-shadow(0 0 10px var(--accent-shadow));}
-.egg-text{overflow:hidden;text-overflow:ellipsis;}
 
-/* ==========================================================
-   7. 弹窗
-   ========================================================== */
 .modal{
-  position:fixed;inset:0;z-index:60;
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:60;
   display:flex;align-items:center;justify-content:center;padding:20px;
   background:rgba(0,0,0,.42);
-  -webkit-backdrop-filter:blur(10px) saturate(140%);
-          backdrop-filter:blur(10px) saturate(140%);
-  opacity:0;pointer-events:none;
-  transition:opacity .24s ease;
+  -webkit-backdrop-filter:blur(10px) saturate(140%); backdrop-filter:blur(10px) saturate(140%);
+  opacity:0;pointer-events:none;transition:opacity .24s ease;
 }
 .modal.show{opacity:1;pointer-events:auto;}
 .modal-card{
-  position:relative;
-  width:min(88vw,366px);max-height:80vh;overflow:auto;
-  border-radius:24px;padding:24px 22px;
+  position:relative;width:min(88vw,366px);max-height:80vh;overflow:auto;border-radius:24px;padding:24px 22px;
   background-color:var(--glass-bg-strong);
-  background-image:linear-gradient(180deg,
-      var(--glass-top) 0%,
-      rgba(255,255,255,.06) 30%,
-      rgba(255,255,255,0)  60%);
-  -webkit-backdrop-filter:blur(30px) saturate(190%);
-          backdrop-filter:blur(30px) saturate(190%);
-  box-shadow:
-    inset 0  1px 0 0 var(--glass-top),
-    inset 0 -1px 0 0 rgba(0,0,0,.10),
-    0 24px 60px -20px var(--glass-shadow),
-    0  6px 18px  -6px var(--glass-shadow);
-  transform:translateY(16px) scale(.94);
-  transition:transform .3s cubic-bezier(.2,.9,.3,1.4);
-  -webkit-overflow-scrolling:touch;
+  -webkit-backdrop-filter:blur(30px) saturate(190%); backdrop-filter:blur(30px) saturate(190%);
+  box-shadow:inset 0 1px 0 0 var(--glass-top), 0 24px 60px -20px var(--glass-shadow);
+  transform:translateY(16px) scale(.94);transition:transform .3s cubic-bezier(.2,.9,.3,1.4);
 }
-.modal-card::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
-  background:linear-gradient(150deg,
-      var(--glass-line) 0%,
-      rgba(255,255,255,.06) 26%,
-      rgba(255,255,255,0)  50%,
-      rgba(255,255,255,.06) 76%,
-      var(--glass-line) 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  pointer-events:none;
+.modal.show .modal-card{transform:none;}
+.modal-card h2{margin:0 0 10px;font-size:20px;font-weight:900;}
+.modal-card p{margin:0 0 14px;font-size:13px;line-height:1.7;color:var(--muted);}
+.modal-card p b{color:var(--text);}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions .btn{height:47px;font-size:14px;}
+
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .egg-toast, .modal-card{ background-color:var(--panel) !important; }
 }
-.modal.show .modal-
+</style>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+
+<div class="app">
+  <header class="hud">
+    <div>
+      <h1 class="logo">2048</h1>
+      <p class="sub" id="subText">滑动合并 · 冲击 2048</p>
+    </div>
+    <div class="hud-right">
+      <div class="score-card" id="scoreCard" style="background:var(--glass-bg);border:1px solid var(--glass-line);">
+        <span class="score-label">分数</span>
+        <span class="score-value" id="score">0</span>
+      </div>
+      <div class="stat-col">
+        <span>最高 <b id="best">0</b></span>
+        <span>步数 <b id="steps">0</b></span>
+        <span>用时 <b id="time">00:00</b></span>
+      </div>
+      <button class="btn icon-btn" id="btnSound" aria-label="音效开关" aria-pressed="true">🔊</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div class="board" id="board">
+      <div class="board-cells" id="boardCells"></div>
+    </div>
+  </main>
+
+  <footer class="toolbar">
+    <button class="btn primary" id="btnNew">新游戏</button>
+    <button class="btn" id="btnUndo">悔棋<span class="badge" id="undoBadge">0</span></button>
+    <button class="btn" id="btnTheme">主题</button>
+    <button class="btn" id="btnSize">4×4</button>
+    <button class="btn" id="btnAbout" style="flex:0 0 46px;">i</button>
+  </footer>
+</div>
+
+<div class="egg-toast" id="eggToast">
+  <span class="egg-emoji"></span><span class="egg-text"></span>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <h2 id="modalTitle"></h2>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+window.onload = function() {
+  'use strict';
+
+  /* ==================== 常量 ==================== */
+  const MOVE_MS = 110;
+  const SWIPE_MIN = 22;
+  const UNDO_LIMIT = 3;
+  const SIZES = [4, 5, 6];
+  const THEMES = ['neon', 'classic', 'macaron'];
+  const THEME_NAMES = {neon:'霓虹', classic:'经典', macaron:'马卡龙'};
+  const LS = { theme:'g2048:theme', size:'g2048:size', state:'g2048:state', sound:'g2048:sound', best: size=>'g2048:best:'+size };
+  const EGGS = {
+    512:  { emoji:'✨', text:'你已经超过谢雨澄了' },
+    2048: { emoji:'👑', text:'2048 达成！数字之神就是你' },
+    4096: { emoji:'🚀', text:'4096！谢雨澄已在角落里仰望你' }
+  };
+
+  /* ==================== DOM ==================== */
+  const $ = id => document.getElementById(id);
+  const boardEl = $('board'), cellsEl = $('boardCells'), stageEl = $('stage');
+  const scoreEl = $('score'), bestEl = $('best'), stepsEl = $('steps'), timeEl = $('time');
+  const undoBadge = $('undoBadge'), subText = $('subText');
+  const eggToast = $('eggToast');
+  const eggEmoji = eggToast ? eggToast.querySelector('.egg-emoji') : null;
+  const eggText = eggToast ? eggToast.querySelector('.egg-text') : null;
+  const modalEl = $('modal'), modalTitle = $('modalTitle'), modalBody = $('modalBody'), modalActions = $('modalActions');
+
+  /* ==================== 状态 ==================== */
+  const S = {
+    size: 4, side: 0, cell: 0, gap: 8, grid: [],
+    score: 0, best: 0, steps: 0,
+    won: false, keepPlaying: false, over: false,
+    locked: false, history: [], uid: 0, startTime: 0,
+    moveToken: 0, eggsFired: new Set(), eggTimer: 0, timerId: 0
+  };
+
+  /* ==================== 音效 ==================== */
+  let audioCtx = null;
+  let soundOn = true;
+
+  function initAudio() {
+    if (audioCtx) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) audioCtx = new AudioCtx();
+    } catch(e){ audioCtx = null; }
+  }
+  function playTone(freq, duration, type = 'sine', volume = 0.08, delay = 0) {
+    if (!soundOn || !audioCtx) return;
+    try {
+      const t0 = audioCtx.currentTime + delay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, t0);
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(volume, t0 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(t0); osc.stop(t0 + duration + 0.02);
+    } catch(e){}
+  }
+  const sfxMove  = () => playTone(220, 0.06, 'sine', 0.04);
+  const sfxMerge = () => playTone(440, 0.12, 'sine', 0.06);
+  const sfxWin   = () => [523, 659, 784, 1047].forEach((f,i) => playTone(f, .4, 'sine', .06, i*.09));
+  const sfxEgg   = () => [784, 988, 1175, 1568].forEach((f,i) => playTone(f, .5, 'sine', .055, i*.07));
+
+  /* ==================== 工具 ==================== */
+  const allTiles = () => {
+    const out = [];
+    for (const row of S.grid) for (const t of row) if (t) out.push(t);
+    return out;
+  };
+  const fmtTime = ms => {
+    const s = Math.floor(ms / 1000);
+    return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  };
+  const vibrate = ms => {
+    if (navigator.vibrate) { try { navigator.vibrate(ms); } catch(e){} }
+  };
+
+  /* ==================== 渲染 ==================== */
+  function place(el, r, c) {
+    const step = S.cell + S.gap;
+    el.style.width  = S.cell + 'px';
+    el.style.height = S.cell + 'px';
+    el.style.transform = `translate3d(${S.gap + c * step}px, ${S.gap + r * step}px, 0)`;
+  }
+  function applyFont(tile) {
+    const d = String(tile.value).length;
+    const ratio = d <= 2 ? 0.44 : d === 3 ? 0.36 : d === 4 ? 0.30 : 0.24;
+    tile.span.style.fontSize = Math.max(10, Math.round(S.cell * ratio)) + 'px';
+  }
+  function createTile(value, r, c, isNew) {
+    const el = document.createElement('div');
+    el.className = 'tile';
+    el.dataset.v = value;
+    if (value > 2048) el.classList.add('is-super');
+
+    const inner = document.createElement('div');
+    inner.className = 'tile-inner';
+    const span = document.createElement('span');
+    span.textContent = value;
+    inner.appendChild(span);
+    el.appendChild(inner);
+    boardEl.appendChild(el);
+
+    const tile = { id: ++S.uid, value, r, c, el, inner, span };
+    place(el, r, c);
+    applyFont(tile);
+
+    if (isNew) {
+      el.classList.add('is-new');
+      setTimeout(() => el.classList.remove('is-new'), 240);
+    }
+    return tile;
+  }
+  function updateTile(tile) {
+    tile.el.dataset.v = tile.value;
+    tile.el.classList.toggle('is-super', tile.value > 2048);
+    tile.span.textContent = tile.value;
+    applyFont(tile);
+  }
+
+  /* ==================== 布局 ==================== */
+  function layout(force) {
+    const rect = stageEl.getBoundingClientRect();
+    const side = Math.floor(Math.min(rect.width, rect.height));
+    if (side < 60) return;
+    if (!force && side === S.side) return;
+
+    S.side = side;
+    boardEl.style.width  = side + 'px';
+    boardEl.style.height = side + 'px';
+
+    const n = S.size;
+    const gap = Math.max(4, Math.round(side * 0.022));
+    S.gap  = gap;
+    S.cell = (side - gap * (n + 1)) / n;
+
+    boardEl.style.setProperty('--gap', gap + 'px');
+    cellsEl.style.setProperty('--n', n);
+
+    boardEl.classList.add('no-anim');
+    for (const t of allTiles()) { place(t.el, t.r, t.c); applyFont(t); }
+    requestAnimationFrame(() => boardEl.classList.remove('no-anim'));
+  }
+  function buildCells() {
+    cellsEl.innerHTML = '';
+    cellsEl.style.setProperty('--n', S.size);
+    for (let i = 0; i < S.size * S.size; i++) {
+      const d = document.createElement('div');
+      d.className = 'cell';
+      cellsEl.appendChild(d);
+    }
+  }
+
+  /* ==================== 核心逻辑 ==================== */
+  function getCells(dir, i, n) {
+    const cells = [];
+    for (let j = 0; j < n; j++) {
+      let r, c;
+      if (dir === 'left')       { r = i;         c = j;         }
+      else if (dir === 'right') { r = i;         c = n - 1 - j; }
+      else if (dir === 'up')    { r = j;         c = i;         }
+      else                      { r = n - 1 - j; c = i;         }
+      cells.push([r, c]);
+    }
+    return cells;
+  }
+  function computeMove(dir) {
+    const n = S.size, g = S.grid;
+    const moves = [], merges = [];
+    let gained = 0, moved = false;
+    const next = Array.from({length: n}, () => new Array(n).fill(null));
+
+    for (let i = 0; i < n; i++) {
+      const cells = getCells(dir, i, n);
+      const line = [];
+      for (let k = 0; k < n; k++) {
+        const t = g[cells[k][0]][cells[k][1]];
+        if (t) line.push(t);
+      }
+      let out = 0, j = 0;
+      while (j < line.length) {
+        const a = line[j], b = line[j + 1];
+        const [dr, dc] = cells[out];
+        if (b && b.value === a.value) {
+          moves.push({ tile: a, r: dr, c: dc });
+          moves.push({ tile: b, r: dr, c: dc });
+          merges.push({ keep: a, remove: b, value: a.value * 2 });
+          next[dr][dc] = a;
+          gained += a.value * 2;
+          moved = true;
+          j += 2;
+        } else {
+          moves.push({ tile: a, r: dr, c: dc });
+          if (a.r !== dr || a.c !== dc) moved = true;
+          next[dr][dc] = a;
+          j += 1;
+        }
+        out++;
+      }
+    }
+    return { moves, merges, gained, moved, next };
+  }
+
+  function tryMove(dir) {
+    if (S.locked || S.over) return;
+    if (S.won && !S.keepPlaying) return;
+
+    const res = computeMove(dir);
+    if (!res.moved) return;
+
+    initAudio();
+    pushHistory();
+    S.locked = true;
+    const token = ++S.moveToken;
+
+    for (const m of res.moves) {
+      m.tile.r = m.r; m.tile.c = m.c;
+      place(m.tile.el, m.r, m.c);
+    }
+    S.grid = res.next;
+    sfxMove();
+
+    setTimeout(() => {
+      if (token !== S.moveToken) return;
+      finishMove(res.merges, res.gained);
+    }, MOVE_MS);
+  }
+
+  function finishMove(merges, gained) {
+    for (const m of merges) {
+      m.keep.value = m.value;
+      updateTile(m.keep);
+
+      const el = m.keep.el;
+      el.classList.remove('is-merged');
+      void el.offsetWidth;
+      el.classList.add('is-merged');
+      setTimeout(() => el.classList.remove('is-merged'), 240);
+      if (m.remove.el.parentNode) m.remove.el.remove();
+    }
+
+    if (gained > 0) {
+      S.score += gained;
+      updateScoreUI();
+      popScore(gained);
+      vibrate(18);
+      sfxMerge();
+    }
+
+    for (const m of merges) {
+      if (EGGS[m.value] && !S.eggsFired.has(m.value)) {
+        S.eggsFired.add(m.value);
+        showEgg(m.value);
+      }
+    }
+
+    addRandomTile();
+    S.steps++;
+    updateStepsUI();
+    S.locked = false;
+    saveState();
+    checkState();
+  }
+
+  function addRandomTile() {
+    const empties = [];
+    for (let r = 0; r < S.size; r++)
+      for (let c = 0; c < S.size; c++)
+        if (!S.grid[r][c]) empties.push([r, c]);
+    if (!empties.length) return null;
+
+    const [r, c] = empties[(Math.random() * empties.length) | 0];
+    const value = Math.random() < 0.9 ? 2 : 4;
+    const tile = createTile(value, r, c, true);
+    S.grid[r][c] = tile;
+    return tile;
+  }
+
+  function checkState() {
+    const n = S.size, g = S.grid;
+    if (!S.won && !S.keepPlaying) {
+      let reached = false;
+      for (const row of g) for (const t of row) if (t && t.value >= 2048) reached = true;
+      if (reached) {
+        S.won = true;
+        saveState();
+        const delay = S.eggsFired.has(2048) ? 1400 : 0;
+        setTimeout(showWin, delay);
+        return;
+      }
+    }
+
+    let hasEmpty = false;
+    for (let r = 0; r < n; r++)
+      for (let c = 0; c < n; c++)
+        if (!g[r][c]) hasEmpty = true;
+    if (hasEmpty) return;
+
+    let canGo = false;
+    for (let r = 0; r < n && !canGo; r++) {
+      for (let c = 0; c < n && !canGo; c++) {
+        const v = g[r][c].value;
+        if (c + 1 < n && g[r][c + 1].value === v) canGo = true;
+        if (r + 1 < n && g[r + 1][c].value === v) canGo = true;
+      }
+    }
+    if (!canGo) {
+      S.over = true;
+      saveState();
+      showOver();
+    }
+  }
+
+  function showEgg(value) {
+    const egg = EGGS[value];
+    if (!egg || !eggEmoji || !eggText) return;
+    eggEmoji.textContent = egg.emoji;
+    eggText.textContent  = egg.text;
+    eggToast.classList.remove('show');
+    void eggToast.offsetWidth;
+    eggToast.classList.add('show');
+
+    clearTimeout(S.eggTimer);
+    S.eggTimer = setTimeout(() => eggToast.classList.remove('show'), 2400);
+    sfxEgg();
+    vibrate([30, 50, 30, 50, 30]);
+  }
+
+  function pushHistory() {
+    S.history.push({
+      tiles: allTiles().map(t => ({v: t.value, r: t.r, c: t.c})),
+      score: S.score, steps: S.steps,
+      won: S.won, keepPlaying: S.keepPlaying
+    });
+    if (S.history.length > UNDO_LIMIT) S.history.shift();
+    updateUndoUI();
+  }
+  function undo() {
+    if (S.locked || !S.history.length) return;
+    S.moveToken++;
+    const snap = S.history.pop();
+
+    boardEl.querySelectorAll('.tile').forEach(el => el.remove());
+    S.grid = Array.from({length: S.size}, () => new Array(S.size).fill(null));
+    for (const t of snap.tiles) {
+      const tile = createTile(t.v, t.r, t.c);
+      S.grid[t.r][t.c] = tile;
+    }
+    S.score = snap.score; S.steps = snap.steps;
+    S.won = snap.won; S.keepPlaying = snap.keepPlaying;
+    S.over = false; S.locked = false;
+
+    updateScoreUI(); updateStepsUI(); updateUndoUI();
+    hideModal(); saveState(); vibrate(12);
+    initAudio(); playTone(330, .1, 'sine', .05);
+  }
+
+  function newGame() {
+    S.moveToken++;
+    boardEl.querySelectorAll('.tile').forEach(el => el.remove());
+    S.grid = Array.from({length: S.size}, () => new Array(S.size).fill(null));
+    S.score = 0; S.steps = 0;
+    S.won = false; S.keepPlaying = false; S.over = false;
+    S.locked = false; S.history = []; S.eggsFired = new Set();
+    S.startTime = Date.now(); S.best = getBest(S.size);
+
+    updateScoreUI(); updateStepsUI(); updateUndoUI();
+    addRandomTile(); addRandomTile();
+    hideModal(); if(eggToast) eggToast.classList.remove('show');
+    saveState(); startTimer();
+    const btnSize = $('btnSize');
+    if(btnSize) btnSize.textContent = S.size + '×' + S.size;
+  }
+
+  function askNewGame() {
+    initAudio();
+    if (S.score > 0 && !S.over) {
+      openModal('重新开始？', `<p>当前分数 <b>${S.score}</b> 会丢失，确定重开吗？</p>`, [
+        { text:'取消', fn:hideModal },
+        { text:'重开', primary:true, fn:newGame }
+      ]);
+    } else { newGame(); }
+  }
+
+  function startTimer() {
+    clearInterval(S.timerId);
+    if(timeEl) timeEl.textContent = '00:00';
+    S.timerId = setInterval(() => {
+      if (S.over || S.won) return;
+      if (!S.startTime) return;
+      if(timeEl) timeEl.textContent = fmtTime(Date.now() - S.startTime);
+    }, 1000);
+  }
+
+  function getBest(size) {
+    try { return Number(localStorage.getItem(LS.best(size))) || 0; }
+    catch(e) { return 0; }
+  }
+  function saveState() {
+    const data = {
+      size: S.size, score: S.score, steps: S.steps,
+      won: S.won, keepPlaying: S.keepPlaying, over: S.over,
+      startTime: S.startTime,
+      grid: S.grid.map(row => row.map(t => t ? t.value : 0))
+    };
+    try {
+      localStorage.setItem(LS.state, JSON.stringify(data));
+      localStorage.setItem(LS.size, S.size);
+    } catch(e) {}
+  }
+  function loadState() {
+    let data;
+    try { data = JSON.parse(localStorage.getItem(LS.state) || 'null'); }
+    catch(e) { data = null; }
+    if (!data || !SIZES.includes(data.size)) return false;
+    if (!Array.isArray(data.grid) || data.grid.length !== data.size) return false;
+
+    S.moveToken++;
+    S.size = data.size;
+    S.score = Number(data.score) || 0;
+    S.steps = Number(data.steps) || 0;
+    S.won = !!data.won; S.keepPlaying = !!data.keepPlaying; S.over = !!data.over;
+    S.startTime = Number(data.startTime) || Date.now();
+    S.best = getBest(S.size);
+    S.history = []; S.locked = false;
+
+    boardEl.querySelectorAll('.tile').forEach(el => el.remove());
+    S.grid = Array.from({length: S.size}, () => new Array(S.size).fill(null));
+    buildCells(); layout(true);
+
+    for (let r = 0; r < S.size; r++) {
+      for (let c = 0; c < S.size; c++) {
+        const v = data.grid[r][c];
+        if (v) {
+          const tile = createTile(v, r, c);
+          S.grid[r][c] = tile;
+        }
+      }
+    }
+    updateScoreUI(); updateStepsUI(); updateUndoUI();
+    startTimer();
+    if (S.over) setTimeout(showOver, 140);
+    return true;
+  }
+
+  function updateScoreUI() {
+    if(scoreEl) scoreEl.textContent = S.score;
+    if (S.score > S.best) {
+      S.best = S.score;
+      try { localStorage.setItem(LS.best(S.size), S.best); } catch(e) {}
+    }
+    if(bestEl) bestEl.textContent = S.best;
+  }
+  function updateStepsUI() { if(stepsEl) stepsEl.textContent = S.steps; }
+  function updateUndoUI() {
+    if(undoBadge) undoBadge.textContent = S.history.length;
+    const btn = $('btnUndo');
+    if(btn) btn.disabled = S.history.length === 0;
+  }
+  function popScore(delta) {
+    const el = document.createElement('span');
+    el.className = 'score-pop';
+    el.textContent = '+' + delta;
+    const card = $('scoreCard');
+    if(card) {
+      card.appendChild(el);
+      setTimeout(() => el.remove(), 750);
+    }
+  }
+
+  function openModal(title, bodyHTML, actions) {
+    if(!modalEl) return;
+    modalTitle.textContent = title;
+    modalBody.innerHTML = bodyHTML;
+    modalActions.innerHTML = '';
+    actions.forEach(a => {
+      const b = document.createElement('button');
+      b.className = 'btn' + (a.primary ? ' primary' : '');
+      b.textContent = a.text;
+      b.disabled = !!a.disabled;
+      b.onclick = a.fn;
+      modalActions.appendChild(b);
+    });
+    modalEl.classList.add('show');
+  }
+  function hideModal() { if(modalEl) modalEl.classList.remove('show'); }
+
+  function showWin() {
+    openModal('达成 2048！', `<p>当前分数 <b>${S.score}</b>，用了 <b>${S.steps}</b> 步。</p><p>可以继续挑战更大的数字。</p>`, [
+      {text:'继续玩', primary:true, fn:() => { S.keepPlaying = true; hideModal(); saveState(); checkState(); }},
+      {text:'新游戏', fn:newGame}
+    ]);
+    vibrate([20, 40, 20]);
+    sfxWin();
+  }
+
+  function showOver() {
+    const elapsed = S.startTime ? fmtTime(Date.now() - S.startTime) : '--:--';
+    openModal('游戏结束', `<p>本局分数 <b>${S.score}</b>，步数 <b>${S.steps}</b>，用时 <b>${elapsed}</b>。</p><p>最高分：<b>${S.best}</b></p>`, [
+      {text:'悔棋', disabled: S.history.length === 0, fn: undo},
+      {text:'新游戏', primary:true, fn:newGame}
+    ]);
+    vibrate(80);
+    playTone(180, .5, 'sawtooth', .05);
+  }
+
+  function showAbout() {
+    openModal('关于 2048', `<p><b>技术栈：</b>原生 HTML / CSS / JavaScript。</p>
+      <ul>
+        <li>液态玻璃 + 华为式触点光影</li>
+        <li>手势 / 键盘方向键操作</li>
+        <li>悔棋、计时、多尺寸</li>
+        <li>彩蛋：512 / 2048 / 4096</li>
+      </ul>`, [{text:'知道了', primary:true, fn:hideModal}]);
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    const btn = $('btnTheme');
+    if(btn) btn.textContent = THEME_NAMES[theme];
+    if(subText) subText.textContent = `滑动合并 · 冲击 2048 · ${THEME_NAMES[theme]}`;
+    try { localStorage.setItem(LS.theme, theme); } catch(e) {}
+  }
+  function cycleTheme() {
+    const cur = document.documentElement.dataset.theme;
+    const idx = THEMES.indexOf(cur);
+    applyTheme(THEMES[(idx + 1) % THEMES.length]);
+  }
+  function cycleSize() {
+    if (S.locked) return;
+    const idx = SIZES.indexOf(S.size);
+    const next = SIZES[(idx + 1) % SIZES.length];
+    S.size = next; S.best = getBest(next);
+    buildCells(); layout(true); newGame();
+    const btn = $('btnSize');
+    if(btn) btn.textContent = next + '×' + next;
+  }
+
+  function applySound(on) {
+    soundOn = !!on;
+    const btn = $('btnSound');
+    if(btn) {
+      btn.textContent = soundOn ? '🔊' : '🔇';
+      btn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    }
+    try { localStorage.setItem(LS.sound, soundOn ? '1' : '0'); } catch(e) {}
+  }
+  function toggleSound() {
+    initAudio();
+    applySound(!soundOn);
+    if (soundOn) playTone(660, .12, 'sine', .06);
+  }
+
+  /* ==================== 手势 ==================== */
+  let touchStartX = 0, touchStartY = 0, touchActive = false;
+  let mouseDrag = null;
+
+  if(boardEl) {
+    boardEl.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      touchStartX = t.clientX; touchStartY = t.clientY;
+      touchActive = true;
+    }, {passive:true});
+
+    boardEl.addEventListener('touchmove', e => { if (touchActive) e.preventDefault(); }, {passive:false});
+
+    boardEl.addEventListener('touchend', e => {
+      if (!touchActive) return;
+      touchActive = false;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX, dy = t.clientY - touchStartY;
+      const ax = Math.abs(dx), ay = Math.abs(dy);
+      if (Math.max(ax, ay) < SWIPE_MIN) return;
+      if (ax > ay) tryMove(dx > 0 ? 'right' : 'left');
+      else tryMove(dy > 0 ? 'down' : 'up');
+    }, {passive:true});
+
+    boardEl.addEventListener('mousedown', e => {
+      if (e.button !== 0) return;
+      mouseDrag = { x: e.clientX, y: e.clientY };
+    });
+  }
+
+  window.addEventListener('mouseup', e => {
+    if (!mouseDrag) return;
+    const dx = e.clientX - mouseDrag.x, dy = e.clientY - mouseDrag.y;
+    mouseDrag = null;
+    const ax = Math.abs(dx), ay = Math.abs(dy);
+    if (Math.max(ax, ay) < SWIPE_MIN) return;
+    if (ax > ay) tryMove(dx > 0 ? 'right' : 'left');
+    else tryMove(dy > 0 ? 'down' : 'up');
+  });
+
+  const keyMap = { ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down', a:'left', d:'right', w:'up', s:'down' };
+  window.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    const dir = keyMap[key];
+    if (dir) { e.preventDefault(); tryMove(dir); }
+  });
+
+  /* ==================== 按钮光影 ==================== */
+  let pressedBtn = null;
+
+  function spawnRipple(btn, clientX, clientY) {
+    const r = btn.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const px = Math.max(0, Math.min(r.width,  clientX - r.left));
+    const py = Math.max(0, Math.min(r.height, clientY - r.top));
+
+    const maxDist = Math.max(Math.hypot(px, py), Math.hypot(r.width - px, py), Math.hypot(px, r.height - py), Math.hypot(r.width - px, r.height - py));
+    const size = maxDist * 2;
+
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.width  = size + 'px';
+    ripple.style.height = size + 'px';
+    ripple.style.left = (px - size / 2) + 'px';
+    ripple.style.top  = (py - size / 2) + 'px';
+    btn.appendChild(ripple);
+
+    const glow = document.createElement('span');
+    glow.className = 'touch-glow';
+    glow.style.left = px + 'px';
+    glow.style.top  = py + 'px';
+    btn.appendChild(glow);
+
+    setTimeout(() => { ripple.remove(); glow.remove(); }, 900);
+  }
+  function pressBtn(btn, x, y) {
+    if (!btn || btn.disabled) return;
+    if (pressedBtn && pressedBtn !== btn) pressedBtn.classList.remove('is-pressed');
+    pressedBtn = btn;
+    btn.classList.add('is-pressed');
+    spawnRipple(btn, x, y);
+  }
+  function releaseBtn() {
+    if (pressedBtn) pressedBtn.classList.remove('is-pressed');
+    pressedBtn = null;
+  }
+
+  document.addEventListener('pointerdown', e => {
+    const btn = e.target && e.target.closest && e.target.closest('.btn');
+    if (!btn) return;
+    pressBtn(btn, e.clientX, e.clientY);
+  }, {passive:true});
+  document.addEventListener('pointerup', releaseBtn, {passive:true});
+  document.addEventListener('pointercancel', releaseBtn, {passive:true});
+
+  /* ==================== 初始化 ==================== */
+  let resizeRaf = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => layout(false));
+  });
+  window.addEventListener('orientationchange', () => setTimeout(() => layout(true), 140));
+  document.addEventListener('visibilitychange', () => { if (document.hidden) saveState(); });
+
+  let theme = 'neon';
+  try { theme = localStorage.getItem(LS.theme) || 'neon'; } catch(e) {}
+  if (!THEMES.includes(theme)) theme = 'neon';
+  applyTheme(theme);
+
+  let soundPref = true;
+  try { soundPref = localStorage.getItem(LS.sound) !== '0'; } catch(e) {}
+  applySound(soundPref);
+
+  const btnNew = $('btnNew'), btnUndo = $('btnUndo'), btnTheme = $('btnTheme'), btnSize = $('btnSize'), btnSound = $('btnSound'), btnAbout = $('btnAbout');
+  if(btnNew) btnNew.addEventListener('click', askNewGame);
+  if(btnUndo) btnUndo.addEventListener('click', undo);
+  if(btnTheme) btnTheme.addEventListener('click', cycleTheme);
+  if(btnSize) btnSize.addEventListener('click', cycleSize);
+  if(btnSound) btnSound.addEventListener('click', toggleSound);
+  if(btnAbout) btnAbout.addEventListener('click', showAbout);
+
+  let savedSize = 4;
+  try { savedSize = Number(localStorage.getItem(LS.size)) || 4; } catch(e) {}
+  if (!SIZES.includes(savedSize)) savedSize = 4;
+  S.size = savedSize;
+  S.best = getBest(S.size);
+
+  buildCells();
+  layout(true);
+
+  if (!loadState()) newGame();
+  if(btnSize) btnSize.textContent = S.size + '×' + S.size;
+};
+</script>
+</body>
+</html>
